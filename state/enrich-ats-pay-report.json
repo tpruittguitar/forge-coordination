@@ -1,10 +1,10 @@
 {
- "at": "2026-11-27T19:11:27.343Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T190635877Z",
+ "at": "2026-11-27T20:15:04.427Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T200633351Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-27T19:06:44.337Z",
+  "readAt": "2026-11-27T20:06:41.364Z",
   "sha256": "629a60453f31d0f05c636a75b05863f3be4526409eb282b66bb3583427ff3b0f",
   "rows": 8000
  },
@@ -37,44 +37,64 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T190644281Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-3DA9883BCEE4",
+     "V2I-6B85A5DD695F",
+     "V2I-BA13F05A1451",
+     "V2I-71EB9812609B"
+    ]
+   },
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T194230608Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-F2251B82AA06",
+     "V2I-D63AEA8C8DF0",
+     "V2I-C6A45641CAD6"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 2,
-  "fenced_ids": 7
+  "pending_batches": 0,
+  "fenced_ids": 0
  },
  "anchors": 1410,
  "archive_anchors": 5,
- "ats_rows": 20,
+ "ats_rows": 21,
  "ats_read": 0,
- "ats_failed": 2,
+ "ats_failed": 3,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 348,
- "skipped_recent": 118,
- "submitted": 0,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 352,
+ "skipped_recent": 115,
+ "submitted": 7,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 7,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 6,
+ "salary_independently_verified": 6,
  "agg_tried": {
-  "linkedin": 2
+  "linkedin": 3
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 3
  },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 22,
+ "source_reads": 24,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -82,17 +102,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 12,
@@ -107,20 +127,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 2,
+  "candidates": 7,
+  "saved_reused": 6,
   "cache_hits": 0,
-  "reads": 0,
+  "reads": 1,
   "found": 0,
-  "failed": 0,
+  "failed": 1,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-27T19:06:49.874Z",
+  "profile_as_of": "2026-11-27T20:06:46.600Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1224,12 +1244,13 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 319,
- "nothing_found": 319,
- "attempt_only_skipped": 41,
+ "not_attempted": 321,
+ "nothing_found": 321,
+ "attempt_only_skipped": 42,
  "source_origin_blocks": {},
  "ats_errors": {
   "workday": [
+   "429",
    "429",
    "429"
   ]
@@ -1243,10 +1264,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 774,
-  "no_single_label": 0,
+  "no_overview": 780,
+  "no_single_label": 1,
   "deferred": 0,
-  "fenced": 433,
+  "fenced": 426,
   "inactive": 6772,
   "by_label": {},
   "sample": []
@@ -1255,10 +1276,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 541,
- "network_requests": 26,
- "planned": 0,
+ "roles_researched": 551,
+ "network_requests": 33,
+ "planned": 7,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1268,8 +1290,7 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 240,
   "SOURCE_RESEARCH_REQUIRED": 367,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 7,
-  "EVIDENCE_FOUND": 47,
+  "EVIDENCE_FOUND": 54,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -4111,90 +4132,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-3DA9883BCEE4",
-   "company": "Gummi World",
-   "title": "Operations Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:07:52.996Z",
-   "retryAt": "2026-11-26T20:07:52.996Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6B85A5DD695F",
-   "company": "N2W Engineering",
-   "title": "Director of Operations, Maintenance, and Installation (OMI)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:07:53.001Z",
-   "retryAt": "2026-11-26T20:07:53.001Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BA13F05A1451",
-   "company": "CCS Direct, LLC",
-   "title": "Director of Business Systems & Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:07:53.003Z",
-   "retryAt": "2026-11-26T20:07:53.003Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-71EB9812609B",
-   "company": "His Glory",
-   "title": "Director of Television Strategy & Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:07:53.368Z",
-   "retryAt": "2026-11-26T20:07:53.368Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F2251B82AA06",
-   "company": "Abbott",
-   "title": "Site Lab Operations Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:43:32.141Z",
-   "retryAt": "2026-11-26T20:43:32.141Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D63AEA8C8DF0",
-   "company": "Quest Workspaces",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:43:32.142Z",
-   "retryAt": "2026-11-26T20:43:32.142Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-DDCCF2148F82",
    "company": "Gyro Hut",
    "title": "Director of Operations",
@@ -4822,19 +4759,6 @@
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4DDBDF396EE0",
-   "company": "University of Nevada, Reno",
-   "title": "Director, Faculty Practice Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-27T18:13:50.314Z",
-   "retryAt": "2026-11-27T19:13:50.314Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -10251,25 +10175,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-C6A45641CAD6",
-   "company": "AESC US",
-   "title": "Sr. Manager Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T19:43:55.995Z",
-   "retryAt": "2026-11-26T20:43:55.995Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485632240",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-C05CC25E537F",
    "company": "Deloitte",
    "title": "Senior Manager - Physical AI",
@@ -10277,9 +10182,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-27T03:10:14.082Z",
-   "retryAt": "2026-11-27T19:10:14.082Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-27T20:08:44.018Z",
+   "retryAt": "2026-11-28T12:08:44.018Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10295,9 +10200,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-27T03:10:14.083Z",
-   "retryAt": "2026-11-27T19:10:14.083Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-27T20:08:44.018Z",
+   "retryAt": "2026-11-28T12:08:44.018Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -11672,7 +11577,116 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-F2251B82AA06",
+   "fields": {
+    "SALARY_BASE_LOW": 172000,
+    "SALARY_BASE_HIGH": 344000,
+    "SALARY_MIDPOINT": 258000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.jobs.abbott/us/en/job/ABLAUS31168039ENUSEXTERNAL/Site-Lab-Operations-Director?utm_source=indeed&utm_medium=phenom-feeds",
+    "SALARY_ASOF": "2026-11-24",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "PREFERRED QUALIFICATIONS: Master's Degree, preferably science related.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.jobs.abbott/us/en/job/ABLAUS31168039ENUSEXTERNAL/Site-Lab-Operations-Director?utm_source=indeed&utm_medium=phenom-feeds",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 301000
+   }
+  },
+  {
+   "id": "V2I-D63AEA8C8DF0",
+   "fields": {
+    "SALARY_BASE_LOW": 100000,
+    "SALARY_BASE_HIGH": 120000,
+    "SALARY_MIDPOINT": 110000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=e41bfce76578fc8a",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=e41bfce76578fc8a",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 115000
+   }
+  },
+  {
+   "id": "V2I-71EB9812609B",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=826c30dc202d7a22",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27"
+   }
+  },
+  {
+   "id": "V2I-3DA9883BCEE4",
+   "fields": {
+    "SALARY_BASE_LOW": 158200,
+    "SALARY_BASE_HIGH": 222200,
+    "SALARY_MIDPOINT": 190200,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=7fe75fb624f1ee76",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=7fe75fb624f1ee76",
+    "DEGREE_ASOF": "2026-11-19",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 206200
+   }
+  },
+  {
+   "id": "V2I-6B85A5DD695F",
+   "fields": {
+    "SALARY_BASE_LOW": 145000,
+    "SALARY_BASE_HIGH": 165000,
+    "SALARY_MIDPOINT": 155000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=1bc0ecfbd3bbfc46",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in engineering, environmental science, business, or a related field preferred; equivalent relevant leadership experience considered.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=1bc0ecfbd3bbfc46",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 160000
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-C6A45641CAD6",
+   "company": "AESC US",
+   "title": "Sr. Manager Operations",
+   "location": "Columbia, South Carolina Metropolitan Area",
+   "posting": "https://www.linkedin.com/jobs/view/4485632240",
+   "est": [
+    144000,
+    236000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 OPS any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-3A71FA31EAF7",
+    "V2I-6BBA73913BB6",
+    "V2I-FC10735187D4",
+    "V2I-E62A4E90DC8C",
+    "V2I-9231EDE0F177",
+    "V2I-FD41C43B8A09",
+    "V2I-B7F950E13DFB"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
