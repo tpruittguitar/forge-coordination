@@ -1,6 +1,6 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-27T01:51:24.835Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-27T12:52:24.971Z from CANONICAL_WRITER_MASTER.
 
 Of 1247 jobs waiting on Tim, 78 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
@@ -29,7 +29,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 63 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
 | 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
 | 60 | Shield AI | Staff Engineer, Manufacturing Equipment | You declined 2026-11-08 · this is a new posting | Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d | V2I-866FCD423820 → V2I-F555BB994A0E |
-| 60 | Valstad Shipworks | Head of Manufacturing & Industrialization | Applied 2026-10-25 · possible repeat | Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare | V2I-165704D594BE → V2I-01D3C4D0646F |
 | 58 | BAE Systems, Inc. | Director of Supplier Quality | You declined 2026-11-14 · different site | Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA | V2I-25AAA3AF1625 → V2I-291757EAD78B |
 | 58 | Oceans Healthcare | Quality Director | You declined 2026-11-07 · different site | Different worksite: De Ridder, LA, USA vs earlier Longview, TX, USA | V2I-783683EE9FFD → V2I-E76AD0565AF1 |
 | 58 | PAM Health Specialty Hospital of Tulsa | Director of Quality Management (RN) / Tulsa LTACH | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-21, 7 days after 2026-11-14; no posting identity to compare | V2I-806CB8BCC2B6 → V2I-26861E8AD7A2 |
@@ -80,6 +79,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 |  | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 |  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Operations/Distribution Manager [Management Consultant] | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-CF00D8D451C9 → V2I-34008EB1178B |
 |  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Distribution Manager/Operations Manager (Management Consultant) | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-7E466EC95DCA → V2I-34008EB1178B |
+|  | Valstad Shipworks | Head of Manufacturing & Industrialization | Applied 2026-10-25 · possible repeat | Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare | V2I-165704D594BE → V2I-01D3C4D0646F |
 |  | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
 |  | SHIELD | Senior Staff Engineer, Advanced Manufacturing | Applied 2026-10-21 · Rejected 2026-10-21 · possible repost | Posting first seen 2026-11-23, after rejection 2026-10-21 | V2I-E2BA8F959FCD → V2E-A0570E2656B3 |
 |  | Tesla | Associate Production Control Manager, Megapack | You declined 2026-11-05 · different site | Different worksite: Brookshire, TX vs earlier Lathrop, CA | V2I-794058A141F7 → V2I-61C5639005B6 |
