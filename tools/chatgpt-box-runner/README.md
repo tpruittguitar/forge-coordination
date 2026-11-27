@@ -12,8 +12,8 @@ refresh; not under `/workspace/forge-lanes`).
   from the release in `runtime/current.json`.
 - `crontab.txt` — source of truth for box cadence: 5-field cron in
   America/New_York plus TASK_KEY. Backlog, enrichment, discovery and Writer
-  gofer lanes run every 30 minutes on staggered minutes; outcome tracking and
-  posting validation run hourly. Only enabled lanes have a live line. Missed
+  gofer, intake and relevance lanes run every 20 minutes on staggered minutes
+  (:00/:20/:40 through :18/:38/:58); outcome tracking and posting validation run hourly. Only enabled lanes have a live line. Missed
   windows are never caught up.
 - `scheduler.js` — one-minute daemon; a second copy exits. Heartbeat and pid
   under `/home/box/chatgpt-lanes`.

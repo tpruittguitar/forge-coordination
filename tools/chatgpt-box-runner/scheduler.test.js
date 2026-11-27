@@ -58,7 +58,7 @@ test('due() fires once per window and never catches up missed windows', () => {
 });
 
 // cs-92f6a3b0 / Tim 2026-11-26: the checked-in crontab is the box cadence source of truth.
-test('checked-in box crontab runs every enabled grant lane, 30-minute staggered backlog lanes', () => {
+test('checked-in box crontab runs every enabled grant lane, 20-minute staggered backlog lanes', () => {
   const text = fs.readFileSync(path.join(__dirname, 'crontab.txt'), 'utf8');
   const specs = S.parseCrontab(text);
   const lanes = JSON.parse(fs.readFileSync(path.join(__dirname, 'lanes.json'), 'utf8')).lanes;
@@ -70,8 +70,15 @@ test('checked-in box crontab runs every enabled grant lane, 30-minute staggered 
     const s = specs.find(x => x.task === k);
     assert.ok(s, k + ' must be scheduled');
     const mins = [...s.minute].sort((a, b) => a - b);
-    assert.equal(mins.length, 2, k);
-    assert.equal(mins[1] - mins[0], 30, k + ' runs every 30 minutes');
+    assert.equal(mins.length, 3, k);
+    assert.equal(mins[1] - mins[0], 20, k + ' runs every 20 minutes');
+    assert.equal(mins[2] - mins[1], 20, k + ' runs every 20 minutes');
+    assert.equal(s.hour.size, 24, k);
+  }
+  for (const k of ['FORGE_APPLICATION_OUTCOME_TRACKER', 'FORGE_POSTING_VALIDATION']) {
+    const s = specs.find(x => x.task === k);
+    assert.ok(s, k + ' must be scheduled');
+    assert.equal([...s.minute].length, 1, k + ' stays hourly');
     assert.equal(s.hour.size, 24, k);
   }
   const starts = specs.flatMap(s => [...s.minute]);
