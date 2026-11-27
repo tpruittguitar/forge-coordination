@@ -1,10 +1,10 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-27T12:52:24.971Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-27T23:37:35.082Z from CANONICAL_WRITER_MASTER.
 
-Of 1247 jobs waiting on Tim, 78 match a role he already applied to, was rejected from, or declined:
+Of 1234 jobs waiting on Tim, 72 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 78
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 72
 
 Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (78)
+## Kept, labeled (72)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -24,11 +24,9 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 90 | GKN Aerospace | Director of Quality, Site | Applied 2026-10-15 · possible repeat | Posting first seen 2026-11-12, 28 days after 2026-10-15; no posting identity to compare | V2I-E649AD5628D3 → V2S-GKN-SITE-QUALITY-DIR-1442097333 |
 | 76 | Confidential Manufacturing Company | Director of Quality | You declined 2026-11-18 · different site | Different worksite: Charlotte, NC, USA vs earlier Washington DC-Baltimore Area | V2I-410BF471CBF6 → V2I-546CC32EA838 |
 | 69 | CTS Corporation | Director of Operations, North America | You declined 2026-10-26 · different site | Different worksite: Houston, TX, USA vs earlier Lisle, IL | V2I-954806CA62FF → V2I-6C9C8F6C58A3 |
-| 64 | Amazon Web Services (AWS) | Sr. Mfg Eng, Process Quality, Hardware Engineering Services - Manufacturing | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare | V2I-CF667B16D785 → V2I-AD5D63DD4099 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
 | 63 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
 | 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
-| 60 | Shield AI | Staff Engineer, Manufacturing Equipment | You declined 2026-11-08 · this is a new posting | Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d | V2I-866FCD423820 → V2I-F555BB994A0E |
 | 58 | BAE Systems, Inc. | Director of Supplier Quality | You declined 2026-11-14 · different site | Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA | V2I-25AAA3AF1625 → V2I-291757EAD78B |
 | 58 | Oceans Healthcare | Quality Director | You declined 2026-11-07 · different site | Different worksite: De Ridder, LA, USA vs earlier Longview, TX, USA | V2I-783683EE9FFD → V2I-E76AD0565AF1 |
 | 58 | PAM Health Specialty Hospital of Tulsa | Director of Quality Management (RN) / Tulsa LTACH | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-21, 7 days after 2026-11-14; no posting identity to compare | V2I-806CB8BCC2B6 → V2I-26861E8AD7A2 |
@@ -36,7 +34,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
 | 55 | Mitsubishi Power Americas | Director, Quality Management - NGS | You declined 2026-11-04 · possible repeat | Posting first seen 2026-11-05, 1 days after 2026-11-04; no posting identity to compare | V2I-9DB6ABE570F5 → V2I-942A9F2FF451 |
-| 55 | EPM Scientific | Vice President, Quality | You declined 2026-11-02 · different site | Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA | V2I-E32A3FAD4E67 → V2I-331877FAD4F9 |
 | 55 | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Orange, VA, USA vs earlier Mason, OH | V2I-F6340E054971 → V2I-7BAB613B2728 |
 | 54 | Hadrian Automation | Director, Forward Deployed Engineering - Manufacturing | You declined 2026-10-31 · different site | Different worksite: Torrance, CA vs earlier Los Angeles, CA | V2I-E4F07F729E6F → V2I-DD139754B419 |
 | 54 | ABB | Plant Manager | You declined 2026-10-25 · different site | Different worksite: Florence, SC, USA vs earlier Flowery Branch, GA | V2I-0DD8B1B5C121 → V2F-CEAB6DA03BC4 |
@@ -77,12 +74,9 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 33 | Northrop Grumman | Sr Staff Systems Engineer | You declined 2026-11-14 · different site | Different worksite: Gilbert, AZ vs earlier Baltimore, MD | V2I-4201D964B63A → V2I-C669A3BFF5B6 |
 | 33 | Axalta Coating Systems | Houston Plant Manager | You declined 2026-11-04 · possible repeat | Posting first seen 2026-11-17, 13 days after 2026-11-04; no posting identity to compare | V2I-D632B0C9EF00 → V2I-FFF3F7B12EB2 |
 |  | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
-|  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Operations/Distribution Manager [Management Consultant] | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-CF00D8D451C9 → V2I-34008EB1178B |
-|  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Distribution Manager/Operations Manager (Management Consultant) | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-7E466EC95DCA → V2I-34008EB1178B |
 |  | Valstad Shipworks | Head of Manufacturing & Industrialization | Applied 2026-10-25 · possible repeat | Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare | V2I-165704D594BE → V2I-01D3C4D0646F |
 |  | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
 |  | SHIELD | Senior Staff Engineer, Advanced Manufacturing | Applied 2026-10-21 · Rejected 2026-10-21 · possible repost | Posting first seen 2026-11-23, after rejection 2026-10-21 | V2I-E2BA8F959FCD → V2E-A0570E2656B3 |
-|  | Tesla | Associate Production Control Manager, Megapack | You declined 2026-11-05 · different site | Different worksite: Brookshire, TX vs earlier Lathrop, CA | V2I-794058A141F7 → V2I-61C5639005B6 |
 |  | Shield | Staff Engineer, Advanced Manufacturing (R6311) | You declined 2026-11-07 · possible repeat | Posting first seen 2026-11-23, 16 days after 2026-11-07; no posting identity to compare | V2I-7EF66485727C → V2I-4AD7F3DCA5B8 |
 |  | Shield | Staff Engineer, Advanced Manufacturing - Special Projects (R4972) | You declined 2026-11-07 · possible repeat | Posting first seen 2026-11-23, 16 days after 2026-11-07; no posting identity to compare | V2I-4771C39CFF59 → V2I-8523CABBADFF |
 |  | Blue Origin | Sr. Director -Engines Manufacturing | Applied 2026-10-11 · Rejected 2026-10-15 · possible repost | Posting first seen 2026-11-23, after rejection 2026-10-15 | V2I-E2B9D14E771F → V2I-FD139FD0916B |
