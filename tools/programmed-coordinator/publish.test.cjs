@@ -36,6 +36,15 @@ test('new transport accounting and immutable helper deliveries publish while pri
  const f=fixture(t);for(const [file,body]of [['state/HELPER_TRANSPORT.json',{schema:'test'}],['state/CODE_INTAKE_CONSUMPTION.json',{items:[]}],['receipts/FORGE-CODE-CHATGPT-TEST_TRANSPORT.json',{runId:'test'}],['control/grok-intake/FORGE-CODE-CHATGPT-TEST-0001.json',{items:[]}],['receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-TEST.json',{items:[]}]])save(f.local,file,body);
  a.equal(publish(f.local).published,true);save(f.local,'receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-TEST.json',{items:['changed']});a.throws(()=>publish(f.local),/Immutable accounting evidence changed/);
 });
+test('tracked email recovery archive updates publish while tracked immutable receipts still fail',t=>{
+ const f=fixture(t),manifest='state/email-recovery-archive/manifest.json',day='state/email-recovery-archive/2026-11-27.json',receipt='receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json';
+ save(f.local,manifest,{days:['2026-11-27'],schema:'archive-manifest'});save(f.local,day,{items:[{id:'first'}]});save(f.local,receipt,{runId:'original'});
+ a.equal(publish(f.local).published,true);
+ save(f.local,manifest,{days:['2026-11-27'],schema:'archive-manifest',lastPublishedAt:'2026-11-27T20:15:00-05:00'});save(f.local,day,{items:[{id:'updated'}]});
+ a.equal(publish(f.local).published,true);
+ a.equal(JSON.parse(g(f.local,'show','origin/main:'+manifest)).lastPublishedAt,'2026-11-27T20:15:00-05:00');a.equal(JSON.parse(g(f.local,'show','origin/main:'+day)).items[0].id,'updated');a.equal(g(f.local,'status','--porcelain'),'');
+ save(f.local,receipt,{runId:'changed'});a.throws(()=>publish(f.local),/Immutable accounting evidence changed/);
+});
 test('committed modifications to immutable evidence cannot bypass retained accounting checks',t=>{
  const f=fixture(t),file='receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json';save(f.local,file,{runId:'original'});publish(f.local);save(f.local,file,{runId:'changed'});commit(f.local,'incorrect retained edit');a.throws(()=>publish(f.local),/Committed immutable evidence changed/);
 });
