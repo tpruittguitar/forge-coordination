@@ -2,16 +2,17 @@
 const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const R=require('./enrichment-membership-repair.cjs'),E=require('./enrichment.cjs'),S=require('../programmed-coordinator/store.cjs');
 function fixture(){
- const items=R.IDS.map((primaryId,index)=>({primaryId,provider:'ChatGPT',owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status:'ASSIGNED',company:'Example '+index,title:'Manufacturing Director',location:'Town, ST',missingFields:['SALARY'],sourceUrls:['https://example.com/job/'+index],priorAttempts:[],canonicalObservedAt:'2026-11-10T21:39:04.816Z',rowSha256:'a'.repeat(64),sourceReport:'CANONICAL_WRITER_MASTER',researchProvenance:{schema:'forge.enrichment-research-provenance.v1',canonicalSourceSha256:'b'.repeat(64),recoveryRun:null,sourceFingerprint:'c'.repeat(64),retryAt:null}}));
+ const items=['V2I-TEST-ALPHA','V2I-TEST-BETA'].map((primaryId,index)=>({primaryId,provider:'ChatGPT',owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status:'ASSIGNED',company:'Example '+index,title:'Manufacturing Director',location:'Town, ST',missingFields:['SALARY'],sourceUrls:['https://example.com/job/'+index],priorAttempts:[],canonicalObservedAt:'2026-11-10T21:39:04.816Z',rowSha256:'a'.repeat(64),sourceReport:'CANONICAL_WRITER_MASTER',researchProvenance:{schema:'forge.enrichment-research-provenance.v1',canonicalSourceSha256:'b'.repeat(64),recoveryRun:null,sourceFingerprint:'c'.repeat(64),retryAt:null}}));
  const protectedItems=['PROTECTED_SKIP','CONSUMED','RETURNED_PENDING_REVIEW','RETURNED_PARTIALLY_CONSUMED','ALREADY_COMPLETE'].map((status,n)=>({primaryId:'V2I-OTHER'+n,owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status,requestId:'original-'+n,unknownFuture:{preserve:true},coordinatorConsumption:{proof:'old-proof'}}));
  return {schema:'forge.enrichment-helper-work.v1',assignmentId:'GROK-ENRICH-20261101-V1',provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',enabled:true,routingActive:true,unknownRoot:{preserve:'all'},items:[...items,...protectedItems,...items.map(i=>({...i,canonicalObservedAt:'2026-11-10T21:41:34.612Z'}))]};
 }
 function prepared(work=fixture()){const raw=JSON.stringify(work,null,2)+'\n';return {raw,expectedBlobSha:R.blob(raw)};}
 function temporary(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'forge-membership-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));return root;}
-test('pure repair preserves all other membership, original states and both duplicate observations',()=>{
+test('repair discovers duplicate IDs in the approved blob and preserves unrelated membership and observations',()=>{
  const original=fixture(),before=structuredClone(original),p=R.plan(...(()=>{const x=prepared(original);return[x.raw,x];})());
  a.deepEqual(original,before);a.equal(p.beforeEntries,9);a.equal(p.afterEntries,7);a.equal(p.uniqueIds,7);
  a.deepEqual(p.work,{...original,items:original.items.slice(0,7)});a.deepEqual(p.observations.map(o=>o.removed),original.items.slice(7));
+ a.deepEqual(R.summary(p).reconciledIds,['V2I-TEST-ALPHA','V2I-TEST-BETA']);
  a.deepEqual(p.observations.map(o=>o.kept),original.items.slice(0,2));E.validateWork(p.work);a.deepEqual(E.researchIds(p.work),new Set());
  a.equal(p.canonicalWrites,0);a.equal(p.writerSubmissions,0);a.equal(p.canonicalCompletion,false);a.equal(R.blob(p.output),p.afterBlobSha);
  a.throws(()=>E.validateWork(original),/overlapping/);a.throws(()=>R.plan(p.output,{expectedBlobSha:p.afterBlobSha}),/EXACT_DUPLICATE_GROUPS/);
@@ -23,7 +24,7 @@ test('requires the concrete current content blob and known ownership',()=>{
 test('all semantic disagreement, unknown duplicate fields, pending work and protected duplicates stay untouched',()=>{
  const changes=[i=>i.company='other',i=>i.rowSha256='f'.repeat(64),i=>i.status='PROTECTED_SKIP',i=>i.status='RETURNED_PENDING_REVIEW',i=>i.priorAttempts.push({requestId:'unknown'}),i=>i.pendingOriginal=true,i=>i.missingFields.push('DEGREE'),i=>i.canonicalObservedAt='bad',i=>i.researchProvenance.retryAt='2026-11-12T00:00:00Z',i=>i.researchProvenance.unknown='preserve'];
  for(const change of changes){const w=fixture();change(w.items.at(-1));const p=prepared(w),before=p.raw;a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED|DIVERGENT/);a.equal(p.raw,before);}
- const unknownBoth=fixture();unknownBoth.items[0].unknown=unknownBoth.items[2].unknown='even equal';let p=prepared(unknownBoth);a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED/);
+ const unknownBoth=fixture();unknownBoth.items[0].unknown=unknownBoth.items[7].unknown='even equal';let p=prepared(unknownBoth);a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED/);
  for(const change of [w=>w.items.pop(),w=>w.items.push(structuredClone(w.items.at(-1))),w=>w.items.push({...w.items[0],primaryId:'V2I-OTHER0'})]){const w=fixture();change(w);p=prepared(w);a.throws(()=>R.plan(p.raw,p),/EXACT_/);}
 });
 test('write is opt-in, lock-checked, hash-bound, audited before mutation and leaves unrelated files intact',t=>{
