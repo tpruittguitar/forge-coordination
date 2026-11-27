@@ -1,10 +1,10 @@
 {
- "at": "2026-11-27T14:49:26.093Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T144440448Z",
+ "at": "2026-11-27T15:03:45.732Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T145543872Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-27T14:44:50.323Z",
+  "readAt": "2026-11-27T14:55:53.856Z",
   "sha256": "70cdcbff084b040e8f18f83dce7675efe766e19e6e2a5ccd7d9430eff70a8c42",
   "rows": 8000
  },
@@ -37,11 +37,21 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-FB5391F880D5",
+     "V2I-2007F81507CE",
+     "V2I-37F053A97771"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 4,
-  "fenced_ids": 12
+  "pending_batches": 3,
+  "fenced_ids": 9
  },
  "anchors": 1407,
  "archive_anchors": 5,
@@ -51,8 +61,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 316,
- "skipped_recent": 156,
+ "estimate_waiting_for_posting": 318,
+ "skipped_recent": 157,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,29 +72,21 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 1,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 1
- },
+ "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 1
- },
- "agg_errors": {
-  "linkedin": [
-   "404"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
- "workday_window_active": true,
+ "workday_window_active": false,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -111,7 +113,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
+  "targets": 0,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -124,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-27T14:44:56.031Z",
+  "profile_as_of": "2026-11-27T14:55:59.170Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1229,8 +1231,7 @@
   "degree": 0
  },
  "not_attempted": 319,
- "nothing_found": 320,
- "source_origin_blocks": {},
+ "nothing_found": 319,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1240,10 +1241,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 769,
+  "no_overview": 772,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 438,
+  "fenced": 435,
   "inactive": 6772,
   "by_label": {},
   "sample": []
@@ -1252,10 +1253,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 505,
- "network_requests": 5,
- "planned": 0,
+ "roles_researched": 507,
+ "network_requests": 6,
+ "planned": 3,
  "research_budget_exhausted": false,
+ "writer_unconfirmed": 3,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1265,8 +1268,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 240,
   "SOURCE_RESEARCH_REQUIRED": 367,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 12,
-  "EVIDENCE_FOUND": 45,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 9,
+  "EVIDENCE_FOUND": 48,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -4134,48 +4137,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-FB5391F880D5",
-   "company": "Jacobs",
-   "title": "Executive Director of Operations - California",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T14:49:22.597Z",
-   "retryAt": "2026-11-26T15:49:22.597Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2007F81507CE",
-   "company": "Crowley Maritime Corporation",
-   "title": "Director, Terminal Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T14:49:22.791Z",
-   "retryAt": "2026-11-26T15:49:22.791Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-37F053A97771",
-   "company": "California State Polytechnic University Pomona",
-   "title": "Director, Farm Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T14:49:22.792Z",
-   "retryAt": "2026-11-26T15:49:22.792Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-04C14FC741B9",
    "company": "Thomson Reuters",
    "title": "GTM Planning & Operations Director",
@@ -5285,24 +5246,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-BDFD91ABD290",
-   "company": "United States",
-   "title": "Nova Global",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-27T14:45:49.665Z",
-   "retryAt": "2026-11-28T06:45:49.665Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-945D41251C45",
    "company": "Cummins Inc.",
    "title": "Manufacturing Operations Manager",
@@ -5617,6 +5560,24 @@
     {
      "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5275363007?pay_transparency=true",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BDFD91ABD290",
+   "company": "United States",
+   "title": "Nova Global",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-27T14:45:49.665Z",
+   "retryAt": "2026-11-28T06:45:49.665Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -12361,7 +12322,46 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-FB5391F880D5",
+   "fields": {
+    "SALARY_BASE_LOW": 300000,
+    "SALARY_BASE_HIGH": 390000,
+    "SALARY_MIDPOINT": 345000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://careers.jacobs.com/en_US/careers/JobDetail/Executive-Director-of-Operations-California/48246",
+    "SALARY_ASOF": "2026-11-27",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's or advanced degree in related field",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.jacobs.com/en_US/careers/JobDetail/Executive-Director-of-Operations-California/48246",
+    "DEGREE_ASOF": "2026-11-27",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 367500
+   }
+  },
+  {
+   "id": "V2I-2007F81507CE",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in logistics, business administration, transportation or related field; or a combination of post-high school and equal experience may be substituted for education.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.crowley.com/jobs/10115/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27"
+   }
+  },
+  {
+   "id": "V2I-37F053A97771",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's Degree - Required fields include: agricultural science, agricultural management, agribusiness, agricultural business, agricultural economics, business administration, finance, or a closely related field is required.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.cpp.edu/en-us/job/564177/director-farm-operations",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
