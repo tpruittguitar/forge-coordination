@@ -364,7 +364,7 @@
       "available": true,
       "countsAvailable": true,
       "startedAt": "2026-10-31T04:35:30.337Z",
-      "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+      "basis": "Observed distinct jobs transitioning to decision-ready enrichment. Baseline stock and partial writes do not count. See enrichmentWriterActivity36 for separately measured COMPLETE Writer writes."
     }
   },
   "completionByWindow": {
@@ -395,7 +395,7 @@
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
-        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        "basis": "Observed distinct jobs transitioning to decision-ready enrichment. Baseline stock and partial writes do not count. See enrichmentWriterActivity36 for separately measured COMPLETE Writer writes."
       }
     },
     "12": {
@@ -425,7 +425,7 @@
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
-        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        "basis": "Observed distinct jobs transitioning to decision-ready enrichment. Baseline stock and partial writes do not count. See enrichmentWriterActivity36 for separately measured COMPLETE Writer writes."
       }
     },
     "24": {
@@ -455,7 +455,7 @@
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
-        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        "basis": "Observed distinct jobs transitioning to decision-ready enrichment. Baseline stock and partial writes do not count. See enrichmentWriterActivity36 for separately measured COMPLETE Writer writes."
       }
     },
     "36": {
@@ -485,9 +485,19 @@
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
-        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        "basis": "Observed distinct jobs transitioning to decision-ready enrichment. Baseline stock and partial writes do not count. See enrichmentWriterActivity36 for separately measured COMPLETE Writer writes."
       }
     }
+  },
+  "enrichmentWriterActivity36": {
+    "count": 112,
+    "perHour": 3.111111111111111,
+    "partial": false,
+    "windowHours": 36,
+    "from": "2026-11-26T01:14:53.115Z",
+    "to": "2026-11-27T13:14:53.115Z",
+    "source": "state/WRITER_ACTIVITY.json",
+    "basis": "Distinct jobs with COMPLETE enrichment Writer writes, not transitions to decision-ready enrichment."
   },
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
