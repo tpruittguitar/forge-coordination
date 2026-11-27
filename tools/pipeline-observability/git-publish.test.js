@@ -77,9 +77,11 @@ test('intake publication and its cursor cannot rebase across or overwrite a work
 });
 test('only a completed flow can retarget once across non-input commits; real input writes stay fenced',()=>{
  const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/upstream-ledger-archive','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/UPSTREAM_COLLECT_CURSOR.json'];
+ const reports=['state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_FLOW.json','state/UPSTREAM_FLOW.json','state/REPORTING_HEALTH.json'];
+ flow.push(reports[0],reports[3]);
  const ledger=flow[0],usage='usage/AI_USAGE_READINGS.jsonl',display='control/OFFICE_STATUS.json';
  // [extra file committed on main during the build, whether it is a real flow input]
- for(const [forbidden,fenced] of [[null,false],['state/AUTOMATION_EXECUTION_EVIDENCE.json',false],['reference/EMPLOYER_PAY_SOURCES.json',false],['verify/recovery/latest.json',false],['receipts/live-backlog/new.json',true],['state/UPSTREAM_COLLECT_CURSOR.json',true]]){
+ for(const [forbidden,fenced] of [[null,false],['state/AUTOMATION_EXECUTION_EVIDENCE.json',false],['reference/EMPLOYER_PAY_SOURCES.json',false],['verify/recovery/latest.json',false],['reference/COMPANY_SITE_CONTEXT.json',true],['receipts/live-backlog/new.json',true],['state/REPORTING_HEALTH.json',true],['state/UPSTREAM_COLLECT_CURSOR.json',true]]){
   const {base,root,bare}=repo(),race=path.join(base,'race');
   const put=(dir,file,body)=>{const p=path.join(dir,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,body);};
   try{
@@ -87,9 +89,15 @@ test('only a completed flow can retarget once across non-input commits; real inp
    git(base,'clone','-q',bare,race);git(race,'config','user.name','test');git(race,'config','user.email','test@example.test');
    put(race,usage,'fresh usage');put(race,display,'fresh display');if(forbidden)put(race,forbidden,'new source');
    git(race,'add','-A');git(race,'commit','-m','new main');git(race,'push','-q','origin','HEAD:main');
+   // Another enrichment publication lands before the flow finishes.
+   for(const suffix of ['', '-recovery']){
+    put(race,'state/enrich-ats-pay'+suffix+'.json','new enrichment bookkeeping');
+    git(race,'add','state');git(race,'commit','-m','ATS-PAY-BOT report '+suffix);git(race,'push','-q','origin','HEAD:main');
+   }
    const newer=git(bare,'rev-parse','HEAD').trim();
-   assert.throws(()=>publish(root,[flow.at(-1)],'cursor',{allowFlowStatusReparent:true}),/complete flow/);
+   assert.throws(()=>publish(root,['state/UPSTREAM_COLLECT_CURSOR.json'],'cursor',{allowFlowStatusReparent:true}),/complete flow/);
    put(root,ledger,JSON.stringify('fresh ledger'));fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
+   for(const report of reports)put(root,report,'fresh report');
    if(fenced){
     assert.throws(()=>publish(root,flow,'finished',{allowFlowStatusReparent:true}),/Flow inputs changed/);
     assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
@@ -100,6 +108,8 @@ test('only a completed flow can retarget once across non-input commits; real inp
     assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
     assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
     if(forbidden)assert.equal(git(bare,'show','HEAD:'+forbidden),'new source');
+    for(const report of reports)assert.equal(git(bare,'show','HEAD:'+report),'fresh report');
+    for(const suffix of ['', '-recovery'])assert.equal(git(bare,'show','HEAD:state/enrich-ats-pay'+suffix+'.json'),'new enrichment bookkeeping');
     assert.equal(JSON.parse(git(bare,'show','HEAD:'+ledger)),'fresh ledger');
     assert.equal(git(bare,'show','HEAD:state/waiting-queues/intake-0002.json'),'new page');
     assert.throws(()=>git(bare,'cat-file','-e','HEAD:state/waiting-queues/intake-0001.json'));

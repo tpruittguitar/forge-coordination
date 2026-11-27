@@ -4,7 +4,7 @@ const Store=require('../upstream-ledger/store.cjs');
 const FILE='state/REPORTING_HEALTH.json';
 const sections=[
  {id:'activity',script:'tools/pipeline-observability/activity.js',paths:['state/WRITER_ACTIVITY.json','state/WRITER_ACTIVITY_DETAILS.json']},
- {id:'flow',script:'tools/pipeline-observability/process-flow.js',paths:['receipts/manual-backlog','state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_OUTCOMES.json','state/RELEVANCE_SCREEN_GUARD.json','state/ENRICHMENT_FLOW.json',Store.LEDGER_PATH,Store.LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/discovery-evidence','state/DISCOVERY_SCREEN_REPORT.json']},
+ {id:'flow',script:'tools/pipeline-observability/process-flow.js',paths:['state/UPSTREAM_COLLECT_CURSOR.json','receipts/manual-backlog','state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_OUTCOMES.json','state/RELEVANCE_SCREEN_GUARD.json','state/ENRICHMENT_FLOW.json',Store.LEDGER_PATH,Store.LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/discovery-evidence','state/DISCOVERY_SCREEN_REPORT.json']},
  {id:'intake-queue',script:'tools/intake-drain/queue.cjs',args:['sync'],paths:[Store.DRAIN_PATH,Store.DRAIN_ARCHIVE]}
 ];
 const CHEAP_PATHS=['state/WRITER_ACTIVITY.json','state/WRITER_ACTIVITY_DETAILS.json','state/REPORTING_HEALTH.json'],SPAWN_TIMEOUT_MS=15*60*1000;

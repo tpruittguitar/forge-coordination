@@ -35,7 +35,9 @@ test('workflow publishes cheap activity before fetching full discovery history, 
  a.ok(activity.includes('publish-report.js activity'));
  a.ok(!/continue-on-error|--unshallow/.test(activity));
  a.ok(pub.includes('if: ${{ !cancelled() }}'));
- a.ok(pub.includes("UPSTREAM_FLOW_COMMIT_CURSOR: '1'"));
+ a.doesNotMatch(pub,/UPSTREAM_FLOW_COMMIT_CURSOR/);
+ a.match(activity,/git-publish\.js --no-push[^\n]+\n\s+git push origin HEAD:main/);
+ a.doesNotMatch(activity,/git rebase/);
  a.ok(y.includes("cron: '7,17,27,37,47,57 * * * *'"));
  a.ok(y.includes('workflow_dispatch: {}'));
  a.match(y,/fetch-depth:\s*1/);
@@ -135,4 +137,21 @@ test('a STALE flow still exits non-zero when intake-queue is also STALE',async()
   a.equal(h.components.flow.status,'STALE');a.equal(h.components['intake-queue'].status,'STALE');
   a.ok(fatalError(h,['flow','intake-queue']));a.equal(process.exitCode,1);
  }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
+});
+
+test('a failed flow restores the last published cursor with its reports',async()=>{
+ const {sections}=require('./publish-report'),flow=sections.find(s=>s.id==='flow');
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-cursor-rollback-'));
+ try{
+  fs.mkdirSync(p.join(root,'state'));
+  const file=p.join(root,'state/UPSTREAM_COLLECT_CURSOR.json');
+  fs.writeFileSync(file,'last published cursor');
+  const health=await publish({root,only:['flow'],run:()=>{
+   fs.writeFileSync(file,'new unpublished cursor');
+   return{ok:false,error:'build failed'};
+  }});
+  a.ok(flow.paths.includes('state/UPSTREAM_COLLECT_CURSOR.json'));
+  a.equal(health.components.flow.status,'STALE');
+  a.equal(fs.readFileSync(file,'utf8'),'last published cursor');
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
