@@ -66,9 +66,6 @@ jobs:
             git reset --hard origin/main
           done
           exit 1
-      - name: Fetch 36 hours of main history for discovery report revisions
-        if: ${{ !cancelled() }}
-        run: git fetch --no-tags --shallow-since="36 hours ago" origin main
       - name: Publish flow with incremental cursor
         if: ${{ !cancelled() }}
         env:
@@ -82,7 +79,13 @@ jobs:
           for attempt in 1 2 3 4; do
             # Every build, including the first, starts at canonical main. A rejected
             # cursor or a real flow input change must rebuild; only proven status-only drift may retarget.
-            git fetch --no-tags origin main
+            # A fixed time window cannot guarantee overlap with the saved discovery
+            # history. Fetch ancestry without downloading unrelated historical blobs.
+            if [[ $(git rev-parse --is-shallow-repository) == true ]]; then
+              git fetch --no-tags --unshallow --filter=blob:none origin main
+            else
+              git fetch --no-tags origin main
+            fi
             git reset --hard FETCH_HEAD
             if node tools/pipeline-observability/publish-report.js flow intake-queue &&
                node tools/pipeline-observability/git-publish.js --allow-status-only-reparent --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/upstream-ledger-archive state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/intake-drain-archive state/UPSTREAM_COLLECT_CURSOR.json; then
