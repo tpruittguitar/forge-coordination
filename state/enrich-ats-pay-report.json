@@ -1,10 +1,10 @@
 {
- "at": "2026-11-27T14:37:39.564Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T143259085Z",
+ "at": "2026-11-27T14:49:26.093Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T144440448Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-27T14:33:09.423Z",
+  "readAt": "2026-11-27T14:44:50.323Z",
   "sha256": "70cdcbff084b040e8f18f83dce7675efe766e19e6e2a5ccd7d9430eff70a8c42",
   "rows": 8000
  },
@@ -52,7 +52,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 316,
- "skipped_recent": 157,
+ "skipped_recent": 156,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -64,13 +64,21 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
+ "agg_tried": {
+  "linkedin": 1
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "404"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -103,7 +111,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -116,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-27T14:33:14.916Z",
+  "profile_as_of": "2026-11-27T14:44:56.031Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1221,7 +1229,8 @@
   "degree": 0
  },
  "not_attempted": 319,
- "nothing_found": 319,
+ "nothing_found": 320,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1243,8 +1252,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 504,
- "network_requests": 4,
+ "roles_researched": 505,
+ "network_requests": 5,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -5282,9 +5291,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T22:43:50.707Z",
-   "retryAt": "2026-11-27T14:43:50.707Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-27T14:45:49.665Z",
+   "retryAt": "2026-11-28T06:45:49.665Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
