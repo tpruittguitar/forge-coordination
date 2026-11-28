@@ -193,8 +193,43 @@ def clean(repo, origin, run=None):
             raise Unsafe('in-progress operation or external object dependency')
 
 
-def acquire(root, task, expected_main_sha, projected_bytes):
+def sparse_selection(paths):
+    """Translate anchored paths (with optional single-component *) to Git rules."""
+    patterns = []
+    for path in paths:
+        path = path.removesuffix('/')
+        if (any(part in ('', '.', '..') for part in path.split('/')) or
+                re.search(r'[\\\[\]?\x00-\x1f\x7f]', path) or
+                path.endswith(' ') or '**' in path):
+            raise Unsafe('invalid sparse path; use repository-relative paths with optional *')
+        patterns.append(path)
+    return patterns
+
+
+def tracked_materialization(repo, sha, paths):
+    # An anchored positive non-cone rule selects the matching file or every
+    # descendant of a matching directory. * never crosses a slash. Count
+    # case-insensitive matches too, since Git can use core.ignoreCase.
+    rules = [re.escape(path).replace(r'\*', '[^/]*') for path in paths]
+    selected = re.compile(r'^(?:' + '|'.join(rules) + r')(?:/|$)',
+                          re.IGNORECASE | re.ASCII) if rules else None
+    tracked_bytes = tracked_files = 0
+    for entry in git(repo, 'ls-tree', '-rlz', sha).split('\0'):
+        if not entry:
+            continue
+        metadata, name = entry.split('\t', 1)
+        mode, kind, _, blob_size = metadata.split()
+        if mode not in ('100644', '100755') or kind != 'blob':
+            raise Unsafe('symlink or submodule tree entries refused')
+        if selected is None or selected.match(name):
+            tracked_bytes += int(blob_size)
+            tracked_files += 1
+    return tracked_bytes, tracked_files
+
+
+def acquire(root, task, expected_main_sha, projected_bytes, sparse_paths=None):
     root = safe_path(root)
+    paths = sparse_selection(sparse_paths or ())
     if not re.fullmatch('[0-9a-f]{40}', expected_main_sha):
         raise Unsafe('expected-main-sha must be a full SHA-1 commit ID')
     with locked(root) as data:
@@ -233,18 +268,21 @@ def acquire(root, task, expected_main_sha, projected_bytes):
             sha = git(repo, 'rev-parse', 'refs/remotes/origin/main')
             if sha != expected_main_sha:
                 raise Unsafe('bootstrap SHA mismatch; no checkout performed')
-            entries = git(repo, 'ls-tree', '-rl', sha).splitlines()
-            tracked_bytes = 0
-            for entry in entries:
-                fields = entry.split(None, 4)
-                if fields[0] != '100644' and fields[0] != '100755':
-                    raise Unsafe('symlink or submodule tree entries refused')
-                tracked_bytes += int(fields[3])
-            preflight(root, data, max(projected_bytes, tracked_bytes), len(entries))
+            tracked_bytes, tracked_files = tracked_materialization(repo, sha, paths)
+            if paths and not tracked_files:
+                raise Unsafe('sparse path list selects no tracked files')
+            # Current pool usage already includes the fetched pack. Preserve the
+            # legacy second reserve for callers that request a full checkout.
+            preflight(root, data, tracked_bytes if paths else max(projected_bytes, tracked_bytes),
+                      tracked_files)
             # Park first, so changing HEAD never materializes a full tree prematurely.
             git(repo, 'sparse-checkout', 'set', '--no-cone', '!/*')
             git(repo, 'checkout', '--detach', sha)
-            git(repo, 'sparse-checkout', 'disable')
+            if paths:
+                git(repo, 'sparse-checkout', 'set', '--no-cone', '--',
+                    *('/' + path for path in paths))
+            else:
+                git(repo, 'sparse-checkout', 'disable')
             preflight(root, data, 0)
             return dict(slot=slot, token=token, checkout=str(repo), main_sha=sha)
         except Exception as exc:
@@ -367,6 +405,7 @@ def recover_failed(root, slot, token, task, expected_main_sha,
             raise Unsafe('exact failed lease token, task and acquisition SHA required')
         if lease.get('error') not in (
                 'git sparse-checkout failed (exit 128); checkout retained',
+                'git sparse-checkout set failed (exit 128); checkout retained',
                 'git sparse-checkout disable failed (exit 128); checkout retained'):
             raise Unsafe('unsupported failed acquisition; preserve for manual review')
         repo = root / ('slot-' + str(slot))
@@ -432,6 +471,8 @@ def main():
         if name == 'acquire':
             p.add_argument('--task', required=True)
             p.add_argument('--expected-main-sha', required=True)
+            p.add_argument('--sparse-paths', nargs='+', metavar='PATH',
+                           help='repository-relative files or directories (* within a component)')
         if name in ('release', 'recover-failed'):
             p.add_argument('--slot', required=True)
             p.add_argument('--token', required=True)

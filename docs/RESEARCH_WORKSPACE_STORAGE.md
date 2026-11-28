@@ -49,6 +49,54 @@ SHA. A newer main during bootstrap does not change that snapshot or mix revision
 the next run resolves main again. The byte reserve is storage headroom, not a
 candidate, research or time quota.
 
+### ChatGPT enrichment sparse checkout
+
+For `FORGE_CHATGPT_ENRICHMENT_RESEARCH`, the pool's `max_pool_bytes` returns to
+3 GiB (3,221,225,472 bytes). Initialize new pools with that limit. If an
+existing pool still has a higher limit, have its operator restore the 3 GiB
+limit through reviewed maintenance. A new invocation does not change an
+existing manifest's limits or reclaim failed leases.
+
+Set `ENRICHMENT_POOL` to the stable absolute pool path and
+`RESOLVED_MAIN_SHA` to the full main SHA used for bootstrap.
+
+```sh
+python /workspace/bootstrap/research_workspace.py acquire \
+  --root "$ENRICHMENT_POOL" \
+  --task FORGE_CHATGPT_ENRICHMENT_RESEARCH \
+  --expected-main-sha "$RESOLVED_MAIN_SHA" \
+  --projected-bytes 1610612736 \
+  --sparse-paths .gitattributes .gitignore tools scripts docs lanes control \
+    policy runtime reference schemas \
+    'state/*.json' state/discovery-evidence state/upstream-ledger-archive \
+    state/email-recovery-archive \
+    receipts/CHATGPT_HELPERS receipts/GROK_HELPERS receipts/CLAUDE_HELPERS \
+    receipts/CLAUDE_RELEVANCE receipts/SNIFFER_HELPERS \
+    receipts/AI_EXCEPTION_RUNS receipts/AI_EXCEPTION_REVIEWS \
+    receipts/ENRICHMENT_MEMBERSHIP_REPAIRS receipts/auto-intake/catch-up/state.json \
+    'receipts/*_CHECKPOINT.json' 'receipts/*_VERIFIED.json' \
+    'receipts/*_NOT_ACCEPTED.json' 'receipts/*_ACCEPTANCE.json' \
+    'receipts/FORGE-CODE-CHATGPT-*_TERMINAL.json'
+```
+
+This list keeps the shared instruction, policy, resume and control inputs,
+preflight/planner/validation tools, discovery captures, ATS posting evidence,
+the exact lane receipt directory and historical helper returns. The receipt
+patterns include original Writer fences and their verification/refusal proofs.
+Do not point the production wrapper at a different checkout or bypass its
+existing retained-checkout and lock requirements. Keep using the authorized
+Writer route against the exact published batch.
+
+`--sparse-paths` accepts repository-relative files or directory trees. A single
+`*` can match within a path component, never across `/`. Quote wildcards in the
+shell. Omitting the flag preserves a full checkout. The caller's projection
+reserves space before fetch. After fetch, a sparse acquire budgets only the
+selected tracked blobs and inodes on top of measured pool usage, which already
+includes the pack. The fetch still retains all blobs for the pinned shallow
+snapshot. It does not use a partial clone or lazy fetch, so parking and verified
+recovery can reconstruct tracked files offline. Normal release checks all
+present tracked files and refuses ignored or untracked files in either mode.
+
 Git for Windows needs `core.longpaths=true` when a deep pool path plus a tracked
 filename exceeds 260 characters. The helper enables this per Git invocation and
 in the managed repository so normal lane publication uses the same behavior.
