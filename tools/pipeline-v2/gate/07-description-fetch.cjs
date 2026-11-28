@@ -1,10 +1,23 @@
 'use strict';
-// Step 07: description fetch. Green (NOT_NEEDED) when the handed-over text is already a full posting.
+// Step 07: description fetch. Green (NOT_NEEDED) when description text was handed over.
 // Otherwise one read of the public posting: ATS public APIs first (Greenhouse, Lever, Ashby), then the page.
 // No usable text -> held for retry with DESCRIPTION_UNAVAILABLE (park time is an open question for Tim).
 const MIN=300;
+const TextIdentity=require('../../enrich-ats-pay/text-identity');
+const Recovery=require('../../enrich-ats-pay/recovery'),L=require('../../enrich-ats-pay/lib'),P=require('../../enrich-ats-pay/public-posting');
+async function readExact(job,url,fetch=globalThis.fetch){
+ const api=L.atsApi(url),r=await fetch(api?.api||url,{signal:AbortSignal.timeout(20000)});
+ if(!r.ok)return {kind:api?.kind||'page',http:r.status,text:''};
+ const row={COMPANY:job.company,TITLE:job.title,LOCATION:job.location};
+ const posting=api?Recovery.exactApi(row,api,await r.json()):P.parse(await r.text(),row);
+ return {kind:api?.kind||'page',text:posting?.text||''};
+}
 const BLOCKED=/captcha|sign in to view|verify you are human|access denied|enable javascript/i;
 const strip=h=>String(h||'').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<br\s*\/?>|<\/(p|li|div|h\d)>/gi,'\n').replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/[ \t]+/g,' ').replace(/\n\s*\n+/g,'\n').trim();
+function available(raw){
+ const text=typeof raw==='string'?strip(raw):'';
+ return !!text&&!/^(?:-|N\/A|NONE|UNKNOWN|NOT_AVAILABLE)$/i.test(text)&&!BLOCKED.test(text.slice(0,2000));
+}
 const usable=t=>t&&t.length>=MIN&&!BLOCKED.test(t.slice(0,2000));
 function apiUrl(url){
  let m;
@@ -24,11 +37,23 @@ async function fetchText(url,{fetch=globalThis.fetch}={}){
  return {kind:a.kind,http:r.status,text:strip(await r.text())};
 }
 module.exports=async function descriptionFetch(job,ctx={}){
- if(usable(job.description))return {status:'PASS',reason:'NOT_NEEDED'};
+ if(job.fullPosting!==false&&available(job.description))return {status:'PASS',reason:'NOT_NEEDED'};
+ const saved=TextIdentity.aggregator(job.url)&&ctx.discoveryEvidence?.employerText(job);
+ if(saved&&usable(saved.doc.text)){
+  job.description=saved.doc.text.slice(0,20000);job.descriptionSource=saved.doc.url;job.fullPosting=true;
+  return {status:'PASS',reason:'SAVED_EMPLOYER_POSTING'};
+ }
  if(ctx.network===false)return {status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:NETWORK_OFF'};
- let got;
- try{got=await fetchText(job.url,{fetch:ctx.fetch});}catch(e){return {status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:FETCH_ERROR',detail:String(e&&e.cause&&e.cause.code||e.name||e).slice(0,60)};}
- if(usable(got.text)){job.description=got.text.slice(0,20000);job.descriptionSource='FETCHED:'+got.kind;return {status:'PASS',reason:'FETCHED:'+got.kind};}
- return {status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:'+got.kind+(got.http?':HTTP_'+got.http:'')};
+ const urls=[job.url,...TextIdentity.recoveryUrls(job.next).filter(url=>url!==job.url)];
+ let outcome={status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:NO_READER'};
+ for(const url of urls){
+  if(!ctx.readPosting&&TextIdentity.aggregator(url)&&apiUrl(url).kind!=='linkedin')continue;
+  let got;
+  try{got=ctx.readPosting?await ctx.readPosting(url,{fetch:ctx.fetch}):url===job.url?await fetchText(url,ctx):await readExact(job,url,ctx.fetch);}
+  catch(e){outcome={status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:FETCH_ERROR',detail:String(e?.cause?.code||e?.name||e).slice(0,60)};continue;}
+  if(got.fullPosting!==false&&usable(got.text)){job.description=got.text.slice(0,20000);job.descriptionSource=url===job.url?'FETCHED:'+got.kind:url;job.fullPosting=true;return {status:'PASS',reason:'FETCHED:'+got.kind};}
+  outcome={status:'HOLD',reason:'DESCRIPTION_UNAVAILABLE:'+got.kind+(got.http?':HTTP_'+got.http:'')};
+ }
+ return outcome;
 };
-module.exports.apiUrl=apiUrl;module.exports.strip=strip;module.exports.usable=usable;
+module.exports.readExact=readExact;module.exports.apiUrl=apiUrl;module.exports.strip=strip;module.exports.usable=usable;module.exports.available=available;

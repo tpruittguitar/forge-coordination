@@ -23,7 +23,7 @@ async function runGate({store,ctx={},modules=MODULES}){
  const left=[];
  for(const item of q.items){
   if(item.state==='PARKED'){left.push(item);waitingAt[item.at||'06'].parked++;continue;}
-  const job=store.getJob(item.id);if(!job||!['INTAKE','HELD'].includes(job.state))continue;
+  const job=store.getJob(item.id);if(!job||!['INTAKE','HELD','WAITING_FETCH_TEXT'].includes(job.state))continue;
   let stopped=null;
   for(const id of STEP_IDS){
    const c=counts[id];c.in++;
@@ -37,8 +37,8 @@ async function runGate({store,ctx={},modules=MODULES}){
    item.attempts=(item.attempts||0)+1;item.at=id;item.lastReason=out.reason;
    if(out.status==='FAIL')c.fail++;else c.hold++;
    // park:true means a retry cannot change the outcome (missing identity, ambiguous match): park now.
-   if(out.park||item.attempts>=max){item.state='PARKED';job.state='PARKED';c.parked++;waitingAt[id].parked++;}
-   else{item.state='RETRYING';job.state='HELD';waitingAt[id].retrying++;}
+   if(out.park||item.attempts>=max){item.state='PARKED';job.state=id==='07'?'WAITING_FETCH_TEXT':'PARKED';c.parked++;waitingAt[id].parked++;}
+   else{item.state='RETRYING';job.state=id==='07'?'WAITING_FETCH_TEXT':'HELD';waitingAt[id].retrying++;}
    stopped='WAIT';break;
   }
   if(!stopped){job.state='ENRICHING';job.gatePassedAt=startedAt;}

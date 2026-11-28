@@ -3,6 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const Source=require('../programmed-coordinator/source.cjs'),L=require('../enrich-ats-pay/lib');
 const PostedPay=require('./posted-pay'),Pay=require('../enrich-ats-pay/pay-values'),Identity=require('./job-identity');
+const TextIdentity=require('../enrich-ats-pay/text-identity');
 const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const identity=r=>[Source.employer(r.company||r.COMPANY),Source.norm(r.title||r.TITLE),Source.location(r.location||r.LOCATION)||Source.norm(r.location||r.LOCATION)];
 // Requisition IDs are additional constraints, never a substitute for exact URL and identity.
@@ -124,24 +125,68 @@ function index(root,ledger){
  }
  // Read the saved report directly when intake starts before the asynchronous
  // evidence publisher. No source fetch, file mutation or Writer action occurs.
- let reports;
- return {find,constraints,forIntake(card,{now=Date.now(),maxAgeMs=Infinity}={}){
-  const ids=identity(card);if(ids.some(x=>!x))return null;
-  const cached=find(card,{now,maxAgeMs,allowRoleText:true}),candidates=cached?[cached]:[];
+ let reports,employerPostings;
+ function savedReports(){
   if(!reports){reports=new Map();for(const found of reportEvidence(root)){const k=key(found.doc.url);if(!reports.has(k))reports.set(k,[]);reports.get(k).push(found);}}
-  for(const found of reports.get(key(card.url||card.SOURCE_URL))||[]){const age=now-Date.parse(found.ref.observedAt);
-   if(Number.isFinite(age)&&age>=0&&age<=maxAgeMs&&found.doc.identity.every((x,n)=>x===ids[n])&&key(found.doc.url)===key(card.url||card.SOURCE_URL)&&sameRequisition(found.doc,card))candidates.push(found);
+  return reports;
+ }
+ function employerText(card,{now=Date.now(),maxAgeMs=Infinity}={}){
+  const id=TextIdentity.identityKey(card);if(!id)return null;
+  if(!employerPostings){
+   employerPostings=new Map();
+   const add=(doc,ref)=>{
+    if(!doc||!TextIdentity.employerUrl(doc.url)||doc.fullPosting===false||!completeDocument(doc)||!roleText(doc,ref))return;
+    const k=TextIdentity.identityKey(doc);if(!k)return;
+    if(!employerPostings.has(k))employerPostings.set(k,[]);
+    employerPostings.get(k).push({doc,ref,fullPosting:true});
+   };
+   for(const e of Object.values(ledger.entries||{})){
+    if(!TextIdentity.employerUrl(e.sourceUrl))continue;
+    for(const ref of e.evidenceRefs||[]){
+     if(ref.fullPosting===false)continue;
+     if(!memo.has(ref.sha256))memo.set(ref.sha256,read(root,ref));
+     const doc=memo.get(ref.sha256);if(doc&&key(doc.url)===key(e.sourceUrl))add(doc,ref);
+    }
+   }
+   for(const entries of savedReports().values())for(const {doc,ref} of entries)add(doc,ref);
   }
-  return candidates.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0]||null;
+  const hits=(employerPostings.get(id)||[]).filter(({doc,ref})=>{
+   const age=now-Date.parse(ref.observedAt);
+   if(!(age>=0&&age<=maxAgeMs)||!sameRequisition(doc,card))return false;
+   const expiry=constraints({...doc,url:doc.url},{now})[0]?.validThrough??doc.validThrough;
+   return expiry==null||Date.parse(expiry)>now;
+  });
+  // Different postings with the same job label are not interchangeable.
+  if(new Set(hits.map(({doc})=>key(doc.url))).size>1)return null;
+  return hits.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0]||null;
+ }
+ return {find,constraints,employerText,forIntake(card,{now=Date.now(),maxAgeMs=Infinity,fullOnly=false}={}){
+  const ids=identity(card);if(ids.some(x=>!x))return null;
+  const cached=find(card,{now,maxAgeMs,allowRoleText:!fullOnly}),candidates=cached?[cached]:[];
+  for(const found of savedReports().get(key(card.url||card.SOURCE_URL))||[]){const age=now-Date.parse(found.ref.observedAt);
+   if((!fullOnly||found.fullPosting)&&Number.isFinite(age)&&age>=0&&age<=maxAgeMs&&found.doc.identity.every((x,n)=>x===ids[n])&&key(found.doc.url)===key(card.url||card.SOURCE_URL)&&sameRequisition(found.doc,card))candidates.push(found);
+  }
+  const expiry=fullOnly?constraints(card,{now})[0]?.validThrough:null;
+  return candidates.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt)).find(({doc})=>{
+   const until=expiry??doc.validThrough;
+   return !fullOnly||until==null||Date.parse(until)>now;
+  })||null;
  }};
 }
-function forRow(store,row,now=Date.now()){
- const urls=require('../enrich-ats-pay/recovery').urls(row),salaries=[],postings=[],constraintsByUrl=new Map();
+function forRow(store,row,now=Date.now(),{employerFallback=false,extraUrls=[]}={}){
+ const urls=[...new Set([...require('../enrich-ats-pay/recovery').urls(row),...extraUrls])],salaries=[],postings=[],constraintsByUrl=new Map();
  const unexpired=found=>found&&(found.doc.validThrough==null||Number.isFinite(Date.parse(found.doc.validThrough))&&Date.parse(found.doc.validThrough)>now);
  for(const url of urls){const card={...row,SOURCE_URL:url},constraint=store.constraints?.(card,{now})[0];
   if(constraint){constraintsByUrl.set(Identity.urlKey(url),constraint);if(!Number.isFinite(Date.parse(constraint.validThrough))||Date.parse(constraint.validThrough)<=now)continue;}
-  const salary=store.find(card,{now,maxAgeMs:Infinity,payOnly:true}),full=store.find(card,{now,maxAgeMs:Infinity});
+  const salary=store.find(card,{now,maxAgeMs:Infinity,payOnly:true}),full=store.find(card,{now,maxAgeMs:Infinity})||(employerFallback&&store.forIntake?.(card,{now,fullOnly:true}));
   if(constraint?!!salary&&sameRequisition(constraint,salary.doc):unexpired(salary))salaries.push(salary);if(constraint?!!full&&sameRequisition(constraint,full.doc):unexpired(full))postings.push(full);
+ }
+ if(employerFallback&&!postings.length&&urls.some(TextIdentity.aggregator)){
+  const match=store.employerText?.(row,{now});
+  if(match){
+   postings.push(match);
+   if(PostedPay.eligible(match.doc))salaries.push(match);
+  }
  }
  const latest=xs=>xs.sort((a,b)=>Date.parse(b.doc.postedPay?.observedAt||b.ref.observedAt)-Date.parse(a.doc.postedPay?.observedAt||a.ref.observedAt))[0];
  const salary=latest(salaries),full=postings.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0],found=salary||full;if(!found)return null;

@@ -28,7 +28,10 @@ async function main(a){
  const storePath=path.resolve(a.store||'pipeline-v2-store');
  const store=loadRowsStore(storePath),ctx=await context(a),which=a.engine||'all',out=[];
  if(which==='all'||which==='discovery'){if(!a.lanes)throw Error('--lanes required');out.push(...D.runDiscovery({store,lanes:S.readJson(a.lanes,{}),ctx}));}
- if(which==='all'||which==='gate')out.push(...await G.runGate({store,ctx}));
+ if(which==='all'||which==='gate'){
+  ctx.discoveryEvidence=require('../source-trial/evidence-store').index(path.resolve(__dirname,'../..'));
+  out.push(...await G.runGate({store,ctx}));
+ }
  for(const e of ENGINES)if(which==='all'||which===e.id)out.push(await runEngine(e.id,{store,select:e.select,work:e.work,ctx}));
  for(const r of out)console.log(r.step,r.name.padEnd(22),r.lastRun.result.padEnd(10),'in',r.counts.in,'pass',r.counts.pass,'skip',r.counts.skip,'drop',r.counts.drop,'hold',r.counts.hold,'blocked',r.counts.blocked,'wait',r.counts.wait,'fail',r.counts.fail);
  if(a.report)R.write({store,dir:path.resolve(a.report),meta:{lanes:a.lanes,master:a.master,rules:a.rules,scoring:a.scoring,viewer:ctx.viewer.source,ai:ctx.aiReason||(ctx.ai.available?'credit':ctx.ai.reason)}});

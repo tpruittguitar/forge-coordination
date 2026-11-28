@@ -7,9 +7,9 @@ const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR ||
 const DECISION_COMPLETE='DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required; SCOPE_FIT_RAW=80; FLEX_CLASS=NO_FLEX; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
 // Every decision input except pay and degree, so salary repair/review fixtures are not skipped as blocked (repair-gate.js).
 const NON_PAY_READY='SCOPE_FIT_RAW=80; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
-const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ROLE_TEXT=Lead manufacturing quality and production operations.; ${payload}`;
 const sourceRunOwners = new WeakSet();
-function sourceRun(t,lines,responses,config={},cache,ledger){
+function sourceRun(t,lines,responses,config={},cache,ledger,live=false,inputs={}){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-fetch-')),master=path.join(dir,'master.txt'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads.txt');
  const outputs=['state/enrich-ats-pay-report.json','state/enrich-ats-pay-products.json','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay-calibration.json'].map(p=>path.join(ROOT,p));
  // One baseline per test, not per invocation. after hooks run in registration
@@ -20,10 +20,66 @@ function sourceRun(t,lines,responses,config={},cache,ledger){
  }
  t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));if(ledger)fs.writeFileSync(path.join(dir,'ledger.json'),JSON.stringify(ledger));if(cache)fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
- cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config)},stdio:'pipe'});
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),...(live?[]:['--dry'])],{env:{...process.env,ENRICH_TEST_SUBMIT:live?'1':'',ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config),ENRICH_DISCOVERY_EVIDENCE_ROOT:process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT||dir,...inputs},stdio:'pipe'});
  return {cache:require('./employer-cache-store').read(path.join(dir,'emp.json')),report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
 }
 const exactPosting=()=>'<script type="application/ld+json">'+JSON.stringify({'@type':'JobPosting',title:'Director of Quality',hiringOrganization:{name:'Acme'},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required.',baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:180000,maxValue:220000}}})+'</script>';
+test('no-text worklist row waits at step 07 and only enriches on a later run',t=>{
+ const url='https://careers.example.org/fetch-text';
+ const line=row(1,'V2I-FETCH-TEXT','Director of Quality','Dayton, OH','SOURCE_URL='+url)
+   .replace(/ROLE_TEXT=[^;]*; /,'ROLE_TEXT=; ');
+ const first=sourceRun(t,[line],{[url]:{body:exactPosting()}},{},undefined,undefined,true);
+ assert.equal(first.report.eligible,0);assert.equal(first.report.planned,0);
+ assert.deepEqual(first.report.pending.map(({id,status,step})=>({id,status,step})),
+   [{id:'V2I-FETCH-TEXT',status:'WAITING_FETCH_TEXT',step:'07'}]);
+ assert.equal(first.report.description_fetch.fetched,1);assert.deepEqual(first.reads,[url]);
+ const next=sourceRun(t,[line],{}, {}, first.cache);
+ assert.equal(next.report.eligible,1);assert.equal(next.report.description_fetch.waiting,0);
+ assert.equal(next.report.sample[0].id,'V2I-FETCH-TEXT');assert.deepEqual(next.reads,[]);
+});
+const blockedPosting='https://www.glassdoor.com/job-listing/example';
+const blockedRow=(id,url=blockedPosting)=>row(1,id,'Director of Quality','Dayton, OH','SOURCE_URL='+url).replace(/ROLE_TEXT=[^;]*; /,'');
+function recoveryInput(t,id,url,next){
+ const file=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'text-recovery-')),'recovery.json');
+ t.after(()=>fs.rmSync(path.dirname(file),{recursive:true,force:true}));
+ fs.writeFileSync(file,JSON.stringify({rows:[{id,next,attempts:[{url,status:'HTTP_403'}]}]}));
+ return {ENRICH_RECOVERY_INPUT:file};
+}
+test('403 aggregator row reuses a saved employer posting by normalized identity',t=>{
+ const id='V2I-TEXT-403',url='https://careers.example.org/exact',cache={};
+ const saved={COMPANY:'Acme Inc.',TITLE:'Director of Quality',LOCATION:'Dayton, Ohio'};
+ require('./posting-cache').create({cache}).save(saved,url,{text:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required. Annual base salary USD $170,000 - $210,000.',identityVerified:true,sourceIdentity:{company:saved.COMPANY,title:saved.TITLE,location:saved.LOCATION},pay:{low:170000,high:210000}});
+ const out=sourceRun(t,[blockedRow(id)],{[blockedPosting]:{status:403}}, {},cache,undefined,false,recoveryInput(t,id,blockedPosting));
+ assert.equal(out.report.eligible,1);assert.equal(out.report.description_fetch.waiting,0);
+ assert.equal(out.report.sample[0].id,id);assert.deepEqual(out.reads,[]);
+});
+test('403 aggregator row follows the employer URL listed in recovery',t=>{
+ const id='V2I-TEXT-ROUTED',url='https://careers.example.org/recovery';
+ const out=sourceRun(t,[blockedRow(id)],{[blockedPosting]:{status:403},[url]:{body:exactPosting()}}, {},undefined,undefined,true,recoveryInput(t,id,blockedPosting,'Try the exact employer posting ('+url+').'));
+ assert.deepEqual(out.reads,[url]);assert.equal(out.report.description_fetch.fetched,1);
+ assert.equal(out.report.pending[0].status,'WAITING_FETCH_TEXT');
+ assert.match(out.report.pending[0].next,/careers\.example\.org/);
+});
+test('403 aggregator row without an employer match stays WAITING_FETCH_TEXT',t=>{
+ const id='V2I-TEXT-NO-MATCH';
+ const out=sourceRun(t,[blockedRow(id)],{[blockedPosting]:{status:403}}, {},undefined,undefined,true,recoveryInput(t,id,blockedPosting));
+ assert.equal(out.report.planned,0);assert.equal(out.report.description_fetch.fetched,0);
+ assert.equal(out.report.pending[0].status,'WAITING_FETCH_TEXT');
+ assert.deepEqual(out.reads,[]);
+});
+test('description text from any one intake source is enough to enter enrichment',t=>{
+ const sources=['JOBSPY','HIRINGCAFE','BOARD','LINKEDIN','EMAIL','ATS'];
+ const responses={};
+ const lines=sources.map((source,i)=>{
+   const url='https://careers.example.org/'+source.toLowerCase();
+   responses[url]={body:exactPosting()};
+   return row(i+1,'V2I-TEXT-'+source,'Director of Quality','Dayton, OH',`SOURCE_PROVIDER=${source}; SOURCE_URL=${url}`)
+     .replace('ROLE_TEXT=',i%2?'DESCRIPTION=':'ROLE_TEXT=');
+ });
+ const {report}=sourceRun(t,lines,responses);
+ assert.equal(report.eligible,sources.length);assert.equal(report.planned,sources.length);
+ assert.equal(report.description_fetch.waiting,0);
+});
 test('multiple source runs restore the original report after the owning test completes',async t=>{
  const outputs=['report','products','recovery','calibration'].map(name=>path.join(ROOT,'state/enrich-ats-pay-'+name+'.json')),before=outputs.map(p=>fs.existsSync(p)?fs.readFileSync(p):null);
  await t.test('two fixture runs share one cleanup baseline',child=>{
@@ -275,7 +331,7 @@ test('Tim 2026-10-21 02:15 ET: 2 failed posting reads on different days allow an
 
 test('Tim 2026-10-21 03:10 ET: a comparables range shared by 3+ eligible roles goes in at LOW; same-employer estimates are unaffected', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev139-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
-  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ROLE_TEXT=Lead manufacturing quality and production operations.; ${payload}`;
   const read = 'FEASIBILITY_ATTEMPT_ASOF=2026-10-20; DATE_ADDED=2026-10-19';   // posting already checked by a lane: estimate allowed
   fs.writeFileSync(master, [
     r2(1, 'V2I-0000000000S1', 'Zeta', 'Plant Manager', 'Akron, OH', read), r2(2, 'V2I-0000000000S2', 'Kappa', 'Plant Manager', 'Toledo, OH', read),
@@ -295,7 +351,7 @@ test('Tim 2026-10-21 03:10 ET: a comparables range shared by 3+ eligible roles g
 
 test('REV-140: archived posted pay stays a comparable; remembered same-employer postings are reused; weak LOW estimates are upgraded', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev140-')), master = path.join(dir, 'master.txt'), archive = path.join(dir, 'archive.txt'), emp = path.join(dir, 'employer.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
-  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ROLE_TEXT=Lead manufacturing quality and production operations.; ${payload}`;
   const read = 'FEASIBILITY_ATTEMPT_ASOF=2026-10-20; DATE_ADDED=2026-10-19';
   fs.writeFileSync(master, [
     r2(1, 'V2I-00000000Z001', 'Zeta Corp', 'Plant Manager', 'Akron, OH', read + '; ' + NON_PAY_READY),                                                  // remembered Zeta posting
@@ -321,7 +377,7 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
 
 test('Grok QA #23: a same-employer estimate the BLS check drops to LOW does not replace a comparables LOW', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev140b-')), master = path.join(dir, 'master.txt'), bls = path.join(dir, 'bls.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
-  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ROLE_TEXT=Lead manufacturing quality and production operations.; ${payload}`;
   fs.writeFileSync(master, [
     r2(2, 'V2I-00000000U001', 'Upsilon', 'Plant Manager', 'Toledo, OH', 'SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=comparables:V2I-X; SALARY_BASE_LOW=150000; SALARY_BASE_HIGH=190000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
     r2(3, 'V2I-00000000U002', 'Upsilon', 'Plant Manager', 'Lima, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=175000; SALARY_BASE_HIGH=215000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),

@@ -4,6 +4,7 @@
 const crypto=require('node:crypto'),L=require('./lib'),P=require('./public-posting'),R=require('./recovery'),Pay=require('./pay-values');
 // Capture age is provenance, not a posting-access prerequisite.
 const MAX_AGE_MS=Infinity;
+const TextIdentity=require('./text-identity'),Identity=require('../source-trial/job-identity');
 const identity=r=>JSON.stringify([r.COMPANY,r.TITLE,r.LOCATION]);
 function route(raw){try{
  const url=P.publicUrl(raw);if(!url)return null;const u=new URL(url),host=u.hostname;
@@ -18,8 +19,16 @@ function create({cache,now=()=>Date.now()}){
  const entries=cache.postingEvidence||(cache.postingEvidence={}),stats={saved:0,hits:0,no_pay_hits:0};
  // Backoff checks must not scan thousands of unrelated posting bodies per row.
  // Keep keys (not copies) so pruning/replacement remains authoritative.
- const byIdentity=new Map();
- function index(key,e){if(!byIdentity.has(e.identity))byIdentity.set(e.identity,new Set());byIdentity.get(e.identity).add(key);}
+ const byIdentity=new Map();let byEmployerIdentity;
+ function index(key,e){if(!byIdentity.has(e.identity))byIdentity.set(e.identity,new Set());byIdentity.get(e.identity).add(key);
+  if(byEmployerIdentity)indexEmployer(key,e);
+ }
+ function indexEmployer(key,e){
+  if(!TextIdentity.employerUrl(e.url)||!e.sourceIdentity)return;
+  const id=TextIdentity.identityKey(e.sourceIdentity);if(!id)return;
+  if(!byEmployerIdentity.has(id))byEmployerIdentity.set(id,new Set());
+  byEmployerIdentity.get(id).add(key);
+ }
  for(const [key,e] of Object.entries(entries))index(key,e);
  function save(row,url,parsed,{at=new Date(now()).toISOString()}={}){
   if(!complete(row,url,parsed,at)||Date.parse(at)>now())return null;
@@ -67,6 +76,22 @@ function create({cache,now=()=>Date.now()}){
   const hits=Object.values(entries).filter(e=>route(e.url)===route(url)&&e.sourceIdentity?.company===company&&e.sourceIdentity?.title===title),locations=[...new Set(hits.map(e=>e.sourceIdentity.location))];
   return locations.length===1?find({COMPANY:company,TITLE:title,LOCATION:locations[0]},[url]):null;
  }
- return{save,find,forSource,prune,stats};
+ function employerText(row){
+  const id=TextIdentity.identityKey(row);if(!id)return null;
+  if(!byEmployerIdentity){
+   byEmployerIdentity=new Map();
+   for(const [key,e] of Object.entries(entries))indexEmployer(key,e);
+  }
+  const hits=new Map(),reqs=Identity.fields(row).reqs;
+  for(const key of byEmployerIdentity.get(id)||[]){
+   const e=entries[key];if(!e)continue;
+   const {company:COMPANY,title:TITLE,location:LOCATION}=e.sourceIdentity,req=String(e.identifier||e.postingFacts?.reqId||'').toLowerCase();
+   if(req&&reqs.size&&!reqs.has(req))continue;
+   const saved=find({COMPANY,TITLE,LOCATION},[e.url]),k=route(e.url);
+   if(saved&&(!hits.has(k)||Date.parse(saved.at)>Date.parse(hits.get(k).at)))hits.set(k,saved);
+  }
+  return hits.size===1?hits.values().next().value:null;
+ }
+ return{save,find,forSource,employerText,prune,stats};
 }
 module.exports={create,complete,route,MAX_AGE_MS};

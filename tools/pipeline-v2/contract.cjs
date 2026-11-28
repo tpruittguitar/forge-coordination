@@ -41,6 +41,8 @@ function handoff(r,{lane,foundAt=new Date().toISOString()}={}){
   company:str(r.company||r.COMPANY),title:str(r.title||r.TITLE),location:str(r.location||r.LOCATION),
   url:str(r.url||r.SOURCE_URL),description:str(r.description||r.DESCRIPTION),
   foundAt:str(r.foundAt)||foundAt,
+  ...(r.fullPosting===false||r.discoveryReview?.fullPosting===false?{fullPosting:false}:{}),
+  ...(typeof r.next==='string'?{next:r.next}:{}),
   facts:laneFacts(r,lane),
   ...(r.crafted?{crafted:true,craftedCase:str(r.craftedCase)}:{})
  };
