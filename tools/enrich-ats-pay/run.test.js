@@ -175,6 +175,20 @@ test('production context route migrates filled estimates, keeps missing size non
  const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'pay-sample-match-v6a');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
  }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
 });
+test('card 8176bbb: a salary repair blocked by another missing decision input is skipped and stays queued; a pay-only gap is repaired',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'repair-gate-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
+ const blocked=bad+'; '+NON_PAY_READY.replace('SCOPE_FIT_RAW=80; ','');
+ fs.writeFileSync(master,[row(1,'V2I-00000000G001','Sr. Manager of Quality','Austin, TX',bad+'; '+NON_PAY_READY),row(2,'V2I-00000000G002','Sr. Manager of Quality','Austin, TX',blocked),row(3,'V2I-00000000A001','Quality Associate Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(4,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')};
+ const run=()=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ try{for(let pass=0;pass<2;pass++){const out=run(),inv=Object.fromEntries(out.salary_invalid.map(x=>[x.id,x.status]));
+  assert.equal(out.salary_repairs,1);assert.ok(out.sample.some(x=>x.id==='V2I-00000000G001'&&x.fields.SALARY_BASE_HIGH),'pay-only gap is repaired');
+  assert.ok(!out.sample.some(x=>x.id==='V2I-00000000G002'),'blocked row gets no ruling');
+  assert.equal(inv['V2I-00000000G002'],'SKIPPED_BLOCKED_OTHER_FIELDS','blocked row stays in the repair queue every run');
+  assert.equal(out.salary_repair.skipped_blocked,1);assert.equal(out.salary_repair.by_missing['experience fit'],1);}
+ }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+});
 test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-repair-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; '+NON_PAY_READY;
