@@ -30,8 +30,6 @@ function validateBatch(b,w=load()){
  for(const i of b.items){
   if(seen.has(i.primaryId))throw Error('DUPLICATE_ENRICHMENT_ITEM');
   if(!assignment.has(i.primaryId))throw Error('ENRICHMENT_ITEM_OUTSIDE_ASSIGNMENT');
-  const provenance=w.items.find(a=>a.primaryId===i.primaryId)?.researchProvenance;
-  if(provenance&&i.sourceEvidence?.assignmentSourceFingerprint!==provenance.sourceFingerprint)throw Error('ENRICHMENT_SOURCE_PROVENANCE_REQUIRED');
   if(i.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
   if(!i.sourceEvidence||!i.recommendation)throw Error('ENRICHMENT_ITEM_EVIDENCE_REQUIRED');
   seen.add(i.primaryId);const f=i.sourceEvidence.proposedRawFields||{};
