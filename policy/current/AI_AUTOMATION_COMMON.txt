@@ -1,6 +1,6 @@
 FORGE SHARED AI AUTOMATION CONTRACT
 
-NEVER CONSIDER FIRST — Tim 2026-11-15: In every lane the Never Consider gate runs first, before pay lookup, enrichment, liveness, scoring, source/relevance research or any Writer call. Use only current forge-policy SECTION=NEVER_CONSIDER as the Writer's classifyNeverConsider applies it, through the existing screens (tools/source-trial/preliminary-screen.js, tools/intake-drain exclusions). A match gets no further work. Canonical rows are declined only through the Writer's existing DECLINE path; candidates take the existing exclusion path (NEVER_CONSIDER_EXCLUDED/EXCLUSION_CANDIDATE). No new rules, interpretations or decline transport; REVIEW stays review. Staff Engineer, Senior Staff Engineer and Principal Engineer titles are never declined by this gate. Never consider means never consider.
+For master rows, the Writer worklist (PipelineWorklists.gs:70-74) and ENRICH (Code.gs:2228-2235) apply Never Consider; an unreadable rules copy never blocks enrichment.
 
 USAGE AND ROUTING — Tim 2026-11-22
 Routing: Claude owns coding, the Office /code worker, intake-admission fixes and Grok meter fixes. ChatGPT owns the explicitly assigned scheduled lanes in control/AI_AUTOMATION_TASKS.json. Use fresh current registry and runtime. Ownership does not establish scheduler activation or transfer reservations. No old-runner overlap or automatic handback; Grok and Sniffer keep their own lanes.

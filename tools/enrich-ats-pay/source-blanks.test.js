@@ -9,8 +9,8 @@ function capture(r=row,text=body,extra={}){
   basis:'EMPLOYER_POSTED',pay:{low:180000,high:230000},text,...extra},now-60000);
 }
 const Products={fields:()=>({PRODUCT:'Industrial valves',PRODUCT_SOURCE:'https://example.org/plant',PRODUCT_ROLE:'NEVER',PRODUCT_SCOPE:'COMPANY_LOCATION',PRODUCT_REFERENCE:'site-1',PRODUCT_SITE:'Dayton',PRODUCT_ASOF:'2026-11-22'})};
-test('whole canonical waiting includes non-feasibility rows but excludes protected rows',()=>{
- const other={...row,PRIMARY_ID:'V2I-WORKONLY'},protectedRow={...row,PRIMARY_ID:'V2I-PROTECTED',p:{DO_NOT_REWORK:'yes'}};
+test('whole canonical waiting includes non-feasibility rows still missing a decision field but excludes protected rows',()=>{
+ const other={...row,PRIMARY_ID:'V2I-WORKONLY',TITLE:''},protectedRow={...row,PRIMARY_ID:'V2I-PROTECTED',p:{DO_NOT_REWORK:'yes'}};
  a.deepEqual(S.waiting([row,other,protectedRow],{lanes:{FORGE_ENRICH_FEASIBILITY:[row],FORGE_ENRICH_STRATEGIC:[]}},{fit:()=>({value:null})}).map(r=>r.PRIMARY_ID),['V2I-BLANKS','V2I-WORKONLY']);
 });
 test('exact posting and product reference fill only missing source-backed values, including provenance',()=>{

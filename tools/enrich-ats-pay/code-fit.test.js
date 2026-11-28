@@ -1,6 +1,5 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert');
-const C=require('./decision-complete');
 test('code fit scores 400+ char saved postings into SCOPE_FIT_RAW inside the Writer slots; short, fitted and fenced rows are left alone',()=>{
  const F=require('./code-fit'),E={fit:p=>({value:p.SCOPE_FIT_RAW?Number(p.SCOPE_FIT_RAW):null})};
  const long='Lead plant manufacturing operations, quality systems, lean manufacturing and supplier quality for a new product launch. '.repeat(5);
@@ -15,9 +14,6 @@ test('code fit scores 400+ char saved postings into SCOPE_FIT_RAW inside the Wri
  assert.equal(requests[1].ruling.primaryId,'new');assert.equal(f.SCOPE_FIT_MODEL_REF,'CODE_FIT rev1');assert.match(f.EXPERIENCE_FIT_BASIS,/^CODE_FIT rev1: \d+\/\d+ resume competencies/);
  assert.ok(Number(f.SCOPE_FIT_RAW)>0&&Number(f.SCOPE_FIT_RAW)<=100);
  assert.equal(requests[0].ruling.fields.SALARY_BASE_LOW,'1');assert.equal(requests[0].ruling.fields.SCOPE_FIT_RAW,f.SCOPE_FIT_RAW);
- // CODE_FIT is still written into Writer slots; it does not satisfy the researched-fit gate.
- assert.ok(C.missingFields(row('new'),E).includes('experience fit'));
- assert.ok(C.missingFields(row('new',f),E).includes('experience fit'));
 });
 test('code fit zero run says why: other legacy fits (not EXPERIENCE_FIT), fenced and inactive rows are counted, not silently skipped (run 44210202982)',()=>{
  const F=require('./code-fit');

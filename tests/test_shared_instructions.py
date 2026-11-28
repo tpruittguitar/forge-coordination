@@ -54,9 +54,9 @@ class SharedInstructionTests(unittest.TestCase):
                        'exact post-COMPLETE row effects', 'numeric overall rating'):
             self.assertIn(phrase, self.common)
 
-    def test_never_consider_runs_first_in_every_shared_contract(self):
-        general = (ROOT / self.registry['common']).read_text()
-        for name, text in (('general', general), ('helper', self.common)):
+    def test_never_consider_runs_first_in_the_helper_contract(self):
+        # cs-683348cf (Tim, Nov 27 2026): the general contract leaves Never Consider to the Writer for master rows.
+        for name, text in (('helper', self.common),):
             with self.subTest(contract=name):
                 self.assertIn('NEVER CONSIDER FIRST', text)
                 self.assertIn('Tim 2026-11-15', text)
