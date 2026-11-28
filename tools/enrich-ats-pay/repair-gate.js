@@ -6,7 +6,7 @@
 // Uses decision-complete.js's own field check; no second copy of the rules.
 const {missingFields}=require('./decision-complete');
 // Pay and degree are what these SALARY_/DEGREE_ writes fill, so they never count as blockers.
-const PAY=new Set(['pay basis and source']);
+const PAY=new Set(['pay range','pay basis and source','degree evidence','degree FLEX class']);
 function blockers(row,evidence){return missingFields(row,evidence).filter(n=>!PAY.has(n));}
 // by_missing counts each skipped row once per run, even when both repair and review skip it.
 const seen=new WeakMap();
