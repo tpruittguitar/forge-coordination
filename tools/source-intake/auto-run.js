@@ -24,6 +24,9 @@ const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
 const BoxPass=require('./box-pass-report'),CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs'),DiscoveryInputs=require('./discovery-inputs'),Captured=require('./captured-discovery');
+const TextIdentity=require('../enrich-ats-pay/text-identity'),DescriptionFetch=require('../pipeline-v2/gate/07-description-fetch.cjs');
+const savedPosting=(store,card)=>store?.forIntake?store.forIntake(card):store?.find(card);
+const savedEmployer=(store,card)=>TextIdentity.aggregator(card.url)?store?.employerText?.(card):null;
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -37,7 +40,8 @@ function pick(report,{max,sent,generation=null,blockedIdentities=new Set(),block
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url))||heldKeys.has(Upstream.key(r.url)))continue;
   const captured=capturedInputs?.find(r);if(captured?.blocked)continue;
-  const saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
+  const exact=savedPosting(discoveryEvidence,r);
+  const saved=(exact?.fullPosting??exact?.doc.fullPosting)?exact:savedEmployer(discoveryEvidence,r)||exact;
   if(captured?.card.validThrough&&Date.parse(captured.card.validThrough)<=Date.now())continue;
   const sourceCard=captured?captured.card:saved?{...r,description:saved.doc.text,contentBasis:saved.doc.contentBasis||'CAPTURED_ROLE_CONTENT',fullPosting:saved.fullPosting??saved.doc.fullPosting}:null;
   if(screenContext){
@@ -61,7 +65,7 @@ function pick(report,{max,sent,generation=null,blockedIdentities=new Set(),block
   const record={...identityFields,COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||identityFields.INITIATING_URL||r.url,SCOUT_NOTES:discoveryNotes(r)};
   if(typeof r.DISCOVERY_SOURCE==='string'&&r.DISCOVERY_SOURCE.trim())record.DISCOVERY_SOURCE=r.DISCOVERY_SOURCE;
   const origin=originIndex?.find(r);if(origin&&!record.DISCOVERY_SOURCE)record.DISCOVERY_SOURCE=origin.origin;
-  if(sourceCard?.description)record.ROLE_TEXT=roleText(sourceCard.description);
+  if(sourceCard?.description&&sourceCard.fullPosting===true)record.ROLE_TEXT=roleText(sourceCard.description);
   Object.assign(record,require('../source-trial/posted-pay').fields(r));
   if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
   if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>require('../source-trial/job-identity').fenceApplies({...r,...record},original)))continue; // a changed URL cannot bypass an uncertain prior write
@@ -100,13 +104,24 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   return true;
  }catch{return null}
 }
-async function sourceEvidence(card,{store,capturedInputs,fetchEvidence=evidence}={}){
+async function sourceEvidence(card,{store,capturedInputs,fetchEvidence=evidence,readEmployer=DescriptionFetch.readExact}={}){
  const captured=capturedInputs?.find(card);
  if(captured?.blocked)return {blocked:captured,captured:null,cached:null,business:null,provenance:null};
- if(captured)return {captured,business:'',provenance:captured,cached:null};
- const cached=store?.forIntake?store.forIntake(card):store?.find(card);
- const provenance=cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null;
- if(cached)return {cached,business:'',provenance};
+ if(captured&&captured.card.fullPosting!==false)return {captured,business:'',provenance:captured,cached:null};
+ const exact=savedPosting(store,card);
+ const cached=(exact?.fullPosting??exact?.doc.fullPosting)?exact:savedEmployer(store,card)||exact;
+ const provenance=captured||(cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null);
+ if((cached?.fullPosting??cached?.doc.fullPosting)!==true){
+  for(const url of TextIdentity.recoveryUrls(card.next).filter(url=>url!==card.url).slice(0,4)){
+   const saved=store?.forIntake?.({...card,url},{fullOnly:true});
+   if(saved)return {captured,cached:saved,business:'',provenance:captured||saved.ref};
+   try{
+    const posting=await readEmployer(card,url);
+    if(DescriptionFetch.usable(posting.text))return {captured,cached,business:'',provenance,recovered:{url,text:posting.text}};
+   }catch{ /* The next listed exact route may still be available. */ }
+  }
+ }
+ if(captured||cached)return {captured,cached,business:'',provenance};
  const loaded=await fetchEvidence(card.url,card.company);
  return {cached:null,business:loaded?'' : null,provenance:null};
 }
@@ -121,16 +136,18 @@ async function refreshCapturedReview(candidate,expectedHash,{context}={}){
  return {rulesHash:expectedHash,discoveryEvidence:candidate.discoveryEvidence,primaryBusiness:'',businessEvidenceApproved:false,evidenceVerified:false};
 }
 
-async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun,fetchEvidence=evidence}={}){
- const {captured,cached,business,provenance,blocked}=await sourceEvidence(r,{store:discoveryEvidence,capturedInputs,fetchEvidence});if(blocked)return null;
+async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun,fetchEvidence=evidence,readEmployer}={}){
+ const {captured,cached,business,provenance,blocked,recovered}=await sourceEvidence(r,{store:discoveryEvidence,capturedInputs,fetchEvidence,readEmployer});if(blocked)return null;
   const savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(captured?.card.description)record.ROLE_TEXT=roleText(captured.card.description);
-  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'ROLE_TEXT carried':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(captured?.card.description&&captured.card.fullPosting!==false)record.ROLE_TEXT=roleText(captured.card.description);
+  else if((cached?.fullPosting??cached?.doc.fullPosting)===true)record.ROLE_TEXT=roleText(cached.doc.text);
+  else if(recovered)record.ROLE_TEXT=roleText(recovered.text);
+  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(record.ROLE_TEXT?'ROLE_TEXT carried':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
   if(business==null&&!captured)return null;
-  return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:'',
+  return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:captured?r.url:recovered?.url||cached?.doc.url||r.url,primaryBusiness:'',
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:!captured,source:captured?.card.source||r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(reportRun||'')}};
 }

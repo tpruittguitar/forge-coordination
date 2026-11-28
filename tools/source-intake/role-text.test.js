@@ -21,3 +21,25 @@ test('prepareCandidate carries captured card text into ROLE_TEXT and names it in
  const c=await A.prepareCandidate(card,{COMPANY:'Acme',TITLE:card.title,LOCATION:card.location,SOURCE_URL:card.url,SCOUT_NOTES:'n'},{capturedInputs:{find:()=>captured},discoveryEvidence:{find:()=>null},rulesHash:'abc',fetchEvidence:async()=>{throw Error('no fetch');}});
  a.equal(c.record.ROLE_TEXT,text);a.match(c.record.SCOUT_NOTES,/ROLE_TEXT carried/);
 });
+test('an aggregator snippet stays out of ROLE_TEXT unless full employer text is saved',async()=>{
+ const source={...card,url:'https://www.glassdoor.com/job-listing/test'};
+ const text='Own plant launch and process engineering. '.repeat(15);
+ const partial={doc:{text:'Plant Manager snippet.',fullPosting:false,contentBasis:'INCOMPLETE_ROLE_CONTENT'}};
+ const employer={ref:{path:'state/discovery-evidence/demo.json'},doc:{url:card.url,text,fullPosting:true}};
+ const discoveryEvidence={forIntake:()=>partial,employerText:()=>employer,find:()=>null};
+ const [noText]=A.pick({new_roles:[source]},{...base,discoveryEvidence:{forIntake:()=>partial}});
+ a.equal(noText.record.ROLE_TEXT,undefined);
+ const [saved]=A.pick({new_roles:[source]},{...base,discoveryEvidence});
+ a.equal(saved.record.ROLE_TEXT,text);
+ const out=await A.prepareCandidate(source,saved.record,{discoveryEvidence,fetchEvidence:async()=>{throw Error('should reuse saved posting');}});
+ a.equal(out.evidenceUrl,card.url);
+ a.equal(out.record.ROLE_TEXT,text);
+});
+test('auto intake uses the employer posting listed in recovery instead of an aggregator fetch',async()=>{
+ const source={...card,url:'https://www.glassdoor.com/job-listing/test',next:'Try '+card.url+'.'};
+ const [picked]=A.pick({new_roles:[source]},{...base}),text='Direct site launch and manufacturing engineering. '.repeat(15);
+ const out=await A.prepareCandidate(source,picked.record,{discoveryEvidence:{find:()=>null},
+  fetchEvidence:async()=>{throw Error('should not load the aggregator');},
+  readEmployer:async(job,url)=>{a.equal(job,source);a.equal(url,card.url);return {text};}});
+ a.equal(out.evidenceUrl,card.url);a.equal(out.record.ROLE_TEXT,text);
+});

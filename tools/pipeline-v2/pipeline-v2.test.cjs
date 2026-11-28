@@ -60,6 +60,9 @@ test('gate runs the 7 steps in order, records drops and holds, parks unfixable h
  assert.equal(by['09'].reasons['DECLINED_BEFORE:DECLINED_BY_TIM'],1);
  assert.equal(by['10'].reasons['NEVER_CONSIDER:NC-015_ROLE_FAMILIES'],1);
  assert.equal(by['12'].counts.pass,1);
+ const waiting=store.jobs().find(j=>j.url.endsWith('/nodesc'));
+ assert.equal(waiting.state,'WAITING_FETCH_TEXT');
+ assert.ok(require('./report.cjs').write({store,dir:tmp()}).held.some(j=>j.id===waiting.id&&j.step==='07'));
  const ready=store.jobs().filter(j=>j.state==='ENRICHING');assert.equal(ready.length,1);
  assert.equal(ready[0].fields.REMOTE_HYBRID.value,'ONSITE');assert.equal(ready[0].fields.LATITUDE.source,'PIPELINE_V2_CITY_TABLE');
  for(const r of recs){for(const k of ['rateIn','rateOut','queue','lastRun','nextRun','schedule'])assert.ok(k in r,k);assert.equal(r.schedule.enabled,false);assert.equal(r.nextRun,null);}
@@ -139,4 +142,20 @@ test('dry run writes engine status feed for 20-row fixture',()=>{
  for(const s of require('./steps.json').steps) fs.writeFileSync(require('node:path').join(dir,'status',s.id+'-'+s.slug+'.json'),'{}\n');
  const feed=ES.build({statusDir:require('node:path').join(dir,'status')});
  assert.equal(feed.steps.length,19);
+});
+
+
+test('step 07 skips fetching a supplied description even if it is short',async()=>{
+ const fetch=G.MODULES['07'];
+ let reads=0;
+ const out=await fetch({description:'Lead manufacturing operations.'},{readPosting:async()=>{reads++;}});
+ assert.deepEqual(out,{status:'PASS',reason:'NOT_NEEDED'});
+ assert.equal(reads,0);
+});
+
+test('step 07 replaces a partial aggregator snippet using the listed employer route after 403',async()=>{
+ const fetch=G.MODULES['07'],url='https://www.linkedin.com/jobs/view/4012345678',employer='https://careers.example.com/posts/51';
+ const input=job({url,description:'Snippet only.',fullPosting:false,next:'Use '+employer+'.'}),reads=[];
+ const out=await fetch(input,{readPosting:async u=>{reads.push(u);return u===url?{kind:'linkedin',http:403,text:''}:{kind:'page',text:DESC};}});
+ assert.equal(out.status,'PASS');assert.deepEqual(reads,[url,employer]);assert.equal(input.description,DESC);assert.equal(input.descriptionSource,employer);
 });

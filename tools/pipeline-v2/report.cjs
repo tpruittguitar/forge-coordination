@@ -7,7 +7,7 @@ function write({store,dir,meta={}}){
  const jobs=store.jobs(),statuses=S.STEPS.map(s=>store.status(s.id)).filter(Boolean);
  const byState={};for(const j of jobs)byState[j.state]=(byState[j.state]||0)+1;
  const drops=jobs.filter(j=>j.state==='DROPPED').map(j=>({id:j.id,lane:j.lane,company:j.company,title:j.title,location:j.location,step:j.dropped.step,reason:j.dropped.reason,crafted:!!j.crafted}));
- const held=jobs.filter(j=>['HELD','PARKED'].includes(j.state)).map(j=>{const t=j.trail[j.trail.length-1]||{};return {id:j.id,company:j.company,title:j.title,step:t.step,reason:t.reason,crafted:!!j.crafted};});
+ const held=jobs.filter(j=>['HELD','PARKED','WAITING_FETCH_TEXT'].includes(j.state)).map(j=>{const t=j.trail[j.trail.length-1]||{};return {id:j.id,company:j.company,title:j.title,step:t.step,reason:t.reason,crafted:!!j.crafted};});
  // Writer dry run: the row fields each enriched job would carry. Nothing is sent.
  const preview=jobs.filter(j=>j.state==='ENRICHING').map(j=>({id:j.id,company:j.company,title:j.title,location:j.location,url:j.url,lane:j.lane,fields:Object.fromEntries(Object.entries(j.fields).map(([k,v])=>[k,v.value])),sources:Object.fromEntries(Object.entries(j.fields).map(([k,v])=>[k,v.source]))}));
  const report={schema:'forge.pipeline-v2.dryrun-report.v1',card:'cs-bb7d087b',at:new Date().toISOString(),dryRun:true,writerCalls:0,meta,jobs:jobs.length,byState,steps:statuses.map(s=>({step:s.step,name:s.name,stage:s.stage,result:s.lastRun.result,counts:s.counts,reasons:s.reasons,queue:s.queue,schedule:s.schedule})),drops,held,writerPreview:preview.length};
