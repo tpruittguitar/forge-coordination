@@ -6,6 +6,7 @@ import os
 import time
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -41,6 +42,70 @@ class WorkspaceTests(unittest.TestCase):
 
     def release(self, lease):
         return w.release(self.root, lease['slot'], lease['token'], True)
+
+    def test_sparse_acquire_fits_when_full_tree_exceeds_budget(self):
+        (self.origin / 'large.bin').write_bytes(b'x' * (2 * 1024 * 1024))
+        (self.origin / 'receipts').mkdir()
+        (self.origin / 'receipts' / 'job_CHECKPOINT.json').write_text('{}\n')
+        (self.origin / 'receipts' / 'nested').mkdir()
+        (self.origin / 'receipts' / 'nested' / 'other_CHECKPOINT.json').write_text('{}\n')
+        self.run_git(self.origin, 'add', '.')
+        self.run_git(self.origin, 'commit', '-m', 'large unrelated file and receipts')
+        self.sha = self.run_git(self.origin, 'rev-parse', 'HEAD')
+
+        limit = 256 * 1024
+        sparse_root = self.base / 'sparse-pool'
+        w.init(sparse_root, str(self.origin), min_free_bytes=0, max_pool_bytes=limit)
+        args = ['acquire', '--root', str(sparse_root), '--task', 'hourly-task',
+                '--expected-main-sha', self.sha, '--projected-bytes', str(limit - 1024),
+                '--sparse-paths', 'evidence.txt', 'receipts/*_CHECKPOINT.json']
+        lease = json.loads(subprocess.check_output([sys.executable, w.__file__, *args]))
+        repo = Path(lease['checkout'])
+        self.assertTrue((repo / 'evidence.txt').is_file())
+        self.assertTrue((repo / 'receipts' / 'job_CHECKPOINT.json').is_file())
+        self.assertFalse((repo / 'receipts' / 'nested').exists())
+        self.assertFalse((repo / 'large.bin').exists())
+        self.assertLess(w.size(sparse_root), limit)
+        self.assertEqual(self.run_git(repo, 'cat-file', '-s', self.sha + ':large.bin'),
+                         str(2 * 1024 * 1024))
+        w.release(sparse_root, lease['slot'], lease['token'], True)
+
+        full_root = self.base / 'full-pool'
+        w.init(full_root, str(self.origin), min_free_bytes=0, max_pool_bytes=limit)
+        with self.assertRaisesRegex(w.Unsafe, 'pool byte budget would be exceeded'):
+            w.acquire(full_root, 'hourly-task', self.sha, 10000)
+        self.assertFalse((full_root / 'slot-0' / 'large.bin').exists())
+
+    def test_sparse_clean_parks_and_reuses_slot_with_new_selection(self):
+        lease = w.acquire(self.root, 'hourly-task', self.sha, 10000,
+                          ['evidence.txt', '.gitignore'])
+        repo = Path(lease['checkout'])
+        (repo / 'ignored.txt').touch()
+        with self.assertRaisesRegex(w.Unsafe, 'dirty, untracked or ignored'):
+            self.release(lease)
+        (repo / 'ignored.txt').unlink()
+        (repo / 'outside' / 'private.txt').parent.mkdir()
+        (repo / 'outside' / 'private.txt').touch()
+        with self.assertRaisesRegex(w.Unsafe, 'dirty, untracked or ignored'):
+            self.release(lease)
+        (repo / 'outside' / 'private.txt').unlink()
+        self.release(lease)
+        self.assertFalse((repo / 'evidence.txt').exists())
+        next_lease = w.acquire(self.root, 'hourly-task', self.sha, 10000, ['.gitignore'])
+        self.assertEqual(next_lease['checkout'], lease['checkout'])
+        self.assertTrue((repo / '.gitignore').is_file())
+        self.assertFalse((repo / 'evidence.txt').exists())
+        self.release(next_lease)
+
+    def test_default_still_materializes_all_files_after_sparse_release(self):
+        self.release(w.acquire(self.root, 'hourly-task', self.sha, 10000, ['evidence.txt']))
+        lease = self.acquire()
+        repo = Path(lease['checkout'])
+        self.assertEqual(self.run_git(repo, 'ls-files', '-t'),
+                         'H .gitignore\nH evidence.txt')
+        self.assertTrue((repo / '.gitignore').is_file())
+        self.assertTrue((repo / 'evidence.txt').is_file())
+        self.release(lease)
 
     def test_release_reuse_keeps_one_checkout_and_objects(self):
         for _ in range(3):
@@ -170,6 +235,24 @@ class WorkspaceTests(unittest.TestCase):
         self.assertTrue((repo / 'evidence.txt').exists())
         self.release(lease)
         self.assertEqual((args['audit_dir'] / 'manifest-before.json').read_bytes(), before)
+
+    def test_recover_failed_sparse_set_parks_selected_files(self):
+        native = w.git
+        def fail_after_sparse_set(repo, *args):
+            result = native(repo, *args)
+            if args[:3] == ('sparse-checkout', 'set', '--no-cone') and '/evidence.txt' in args:
+                raise w.Unsafe('git sparse-checkout set failed (exit 128); checkout retained')
+            return result
+        with patch.object(w, 'git', side_effect=fail_after_sparse_set):
+            with self.assertRaisesRegex(w.Unsafe, 'sparse-checkout set failed'):
+                w.acquire(self.root, 'hourly-task', self.sha, 10000, ['evidence.txt'])
+        repo = self.root / 'slot-0'
+        self.assertTrue((repo / 'evidence.txt').is_file())
+        self.assertEqual(w.recover_failed(**self.recovery_args())['state'], 'idle')
+        self.assertFalse((repo / 'evidence.txt').exists())
+        lease = w.acquire(self.root, 'hourly-task', self.sha, 10000, ['evidence.txt'])
+        self.assertEqual(Path(lease['checkout']), repo)
+        self.release(lease)
 
     def test_recovery_requires_exact_identity_and_attestations(self):
         repo = self.failed_materialization()
